@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — C³UA</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/marketing.css" />
+</head>
+<body class="login-page">
+    <div id="toasts"></div>
+    <div class="login-box">
+        <a class="back-link" href="c3ua.html">← Back to C³UA overview</a>
+        <div class="logo">
+            <div class="crest">🧭</div>
+            <h1>C³UA</h1>
+            <p>Curriculum Compliance &amp; Concept Understanding Auditor</p>
+        </div>
+        <div id="login-error" class="login-error"></div>
+        <!-- <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--gray-500);margin-bottom:6px;">SELECT ROLE</div>
+            <div class="role-selector" id="role-selector">
+                <div class="role-option active" data-role="admin" onclick="selectRole('admin',this)">
+                    <span class="emoji">👩‍💼</span><span class="label">Admin</span>
+                </div>
+                <div class="role-option" data-role="teacher" onclick="selectRole('teacher',this)">
+                    <span class="emoji">👨‍🏫</span><span class="label">Teacher</span>
+                </div>
+                <div class="role-option" data-role="student" onclick="selectRole('student',this)">
+                    <span class="emoji">🧑‍🎓</span><span class="label">Student</span>
+                </div>
+                <div class="role-option" data-role="authority" onclick="selectRole('authority',this)">
+                    <span class="emoji">🏛️</span><span class="label">Authority</span>
+                </div>
+            </div>
+        </div> -->
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" id="login-email" type="email" placeholder="email@school.edu.rw" value="admin@gsmk.edu.rw">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input class="form-control" id="login-password" type="password" placeholder="••••••••" value="password123">
+        </div>
+        <button class="btn btn-primary btn-block" id="login-btn" onclick="doLogin()">Sign In</button>
+        <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--gray-400);">
+            🔒 Secure · JWT Authentication · Session: 8h
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // If someone is already signed in, skip straight to the dashboard
+        // instead of making them log in again.
+        if (STATE.user) window.location.href = 'dashboard.html';
+        document.getElementById('login-password').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doLogin();
+        });
+    </script>
+</body>
+</html>

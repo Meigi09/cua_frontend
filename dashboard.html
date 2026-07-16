@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C³UA — Dashboard</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+    <div id="toasts"></div>
+
+    <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+        <div class="modal">
+            <div class="modal-header"><h3 id="modal-title">Modal</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="page-admin">
+        <nav class="topbar">
+            <a class="topbar-brand" href="index.html">C³UA <span>GS Mont Kigali / APACE</span><span class="portal-tag">Admin Portal</span></a>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="avatar" id="admin-avatar">AD</div>
+                    <div><div class="name" id="admin-name">Admin</div><div class="role" id="admin-role">School Admin</div></div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="doLogout()">Sign Out</button>
+            </div>
+        </nav>
+
+        <div class="app-layout">
+            <aside class="sidebar" id="admin-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-label">Overview</div>
+                    <div class="sidebar-item active" data-tab="a-dashboard" onclick="showAdminTab('a-dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+                    <div class="sidebar-item" data-tab="a-compliance" onclick="showAdminTab('a-compliance',this)"><span class="icon">✅</span> Compliance <span class="badge badge-danger" id="a-flag-count">0</span></div>
+                    <div class="sidebar-item" data-tab="a-mastery" onclick="showAdminTab('a-mastery',this)"><span class="icon">🧠</span> Mastery</div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-label">Management</div>
+                    <div class="sidebar-item" data-tab="a-curriculum" onclick="showAdminTab('a-curriculum',this)"><span class="icon">📚</span> Curriculum</div>
+                    <div class="sidebar-item" data-tab="a-guides" onclick="showAdminTab('a-guides',this)"><span class="icon">📖</span> Teacher Guides <span class="badge badge-info" id="a-guide-count">99</span></div>
+                    <div class="sidebar-item" data-tab="a-reports" onclick="showAdminTab('a-reports',this)"><span class="icon">📋</span> Reports</div>
+                    <div class="sidebar-item" data-tab="a-nesa" onclick="showAdminTab('a-nesa',this)"><span class="icon">🎯</span> NESA Readiness</div>
+                    <div class="sidebar-item" data-tab="a-feedback" onclick="showAdminTab('a-feedback',this)"><span class="icon">💬</span> Feedback</div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-label">Administration</div>
+                    <div class="sidebar-item" id="users-nav-item" data-tab="a-users" onclick="showAdminTab('a-users',this)"><span class="icon">👥</span> Manage Users</div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-label">System</div>
+                    <div class="sidebar-item" data-tab="a-settings" onclick="showAdminTab('a-settings',this)"><span class="icon">⚙️</span> Settings</div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+
+                <!-- ===== DASHBOARD ===== -->
+                <div id="a-dashboard" class="tab-content active">
+                    <div class="section-header">
+                        <div><h2>Dashboard</h2><p><span class="live-dot"></span>Real-time compliance monitoring</p></div>
+                        <div class="section-actions">
+                            <span id="a-api-status" style="font-size:12px;color:var(--gray-500);">● Connecting...</span>
+                            <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">↻ Refresh</button>
+                            <button class="btn btn-primary btn-sm" onclick="triggerRebSync()">⟳ Sync REB</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" id="a-stats">
+                        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">Compliance</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
+                        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-label">Teachers</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
+                        <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Lesson Plans</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
+                        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">Risk Flags</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
+                    </div>
+
+                    <div class="card mb-3" id="guide-stats-card">
+                        <div class="card-header">
+                            <div><span class="card-title">📖 Teacher Guides</span><span class="card-subtitle" style="margin-left:12px;font-size:12px;" id="guide-sync-status">● loading...</span></div>
+                            <span class="badge badge-info" id="guide-total-display">—</span>
+                        </div>
+                        <div style="display:flex;gap:24px;flex-wrap:wrap;">
+                            <div><div style="font-size:12px;color:var(--gray-500);">O'Level</div><div style="font-size:20px;font-weight:700;color:var(--gray-800);" id="guide-olevel">—</div></div>
+                            <div><div style="font-size:12px;color:var(--gray-500);">A'Level</div><div style="font-size:20px;font-weight:700;color:var(--gray-800);" id="guide-alevel">—</div></div>
+                            <div><div style="font-size:12px;color:var(--gray-500);">Subjects</div><div style="font-size:20px;font-weight:700;color:var(--gray-800);" id="guide-subjects">—</div></div>
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-size:12px;color:var(--gray-500);margin-bottom:4px;">Top Subjects</div>
+                                <div style="display:flex;gap:6px;flex-wrap:wrap;" id="guide-top-subjects"></div>
+                            </div>
+                        </div>
+                        <div id="guide-alert-container"></div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header"><span class="card-title">CBC Coverage by Subject</span><span class="badge badge-info" id="a-term-badge">Term 3</span></div>
+                            <div id="a-subject-bars" class="panel-scroll"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><span class="card-title">⚠️ Risk Flags</span><span class="badge badge-danger" id="a-risk-count">0</span></div>
+                            <div id="a-risk-list" class="panel-scroll"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+                        </div>
+                    </div>
+
+                    <div class="grid-3 mt-3">
+                        <div class="card"><div class="card-header"><span class="card-title">📅 Term Progress</span></div><div id="a-term-progress"><div class="loading"><div class="spinner"></div></div></div></div>
+                        <div class="card"><div class="card-header"><span class="card-title">📝 Lesson Plan Stats</span></div><div id="a-plan-stats"><div class="loading"><div class="spinner"></div></div></div></div>
+                        <div class="card"><div class="card-header"><span class="card-title">🧑‍🎓 Student Activity</span></div><div id="a-student-activity"><div class="loading"><div class="spinner"></div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- ===== COMPLIANCE ===== -->
+                <div id="a-compliance" class="tab-content">
+                    <div class="section-header">
+                        <div><h2>Compliance Monitor</h2><p>Teacher pacing vs MINEDUC calendar, by Level → Class → Subject</p></div>
+                        <div class="section-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="resetComplianceFilters()">⟲ Reset Filters</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadComplianceData()">↻ Refresh</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="alert alert-info mb-3"><span>📡</span><span id="a-reb-sync-note">Filters apply directly to the synced REB curriculum hierarchy.</span></div>
+                        <div class="filter-bar">
+                            <div class="filter-group"><label class="form-label">Level</label>
+                                <select class="form-control" id="compliance-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
+                            </div>
+                            <div class="filter-group"><label class="form-label">Class</label>
+                                <select class="form-control" id="compliance-class"><option value="">All Classes</option></select>
+                            </div>
+                            <div class="filter-group"><label class="form-label">Subject</label>
+                                <select class="form-control" id="compliance-subject"><option value="">All Subjects</option></select>
+                            </div>
+                            <div class="filter-group"><label class="form-label">Status</label>
+                                <select class="form-control" id="compliance-status">
+                                    <option value="">All Status</option>
+                                    <option value="on_track">On Track</option>
+                                    <option value="behind">Behind</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="ahead">Ahead</option>
+                                </select>
+                            </div>
+                            <div class="filter-group"><label class="form-label">Search</label>
+                                <input class="form-control" style="width:160px;padding:6px 12px;" placeholder="Teacher name..." id="compliance-search" oninput="filterComplianceTable(this.value)">
+                            </div>
+                        </div>
+                        <div class="table-wrap table-scroll">
+                            <table>
+                                <thead><tr><th>Teacher</th><th>Subject</th><th>Class</th><th>Covered</th><th>Expected</th><th>Pacing</th><th>Coverage</th><th>Status</th></tr></thead>
+                                <tbody id="a-compliance-tbody"><tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== MASTERY ===== -->
+                <div id="a-mastery" class="tab-content">
+                    <div class="section-header">
+                        <div><h2>Concept Mastery Heatmap</h2><p>Class-level CBC performance, by Level → Class → Subject</p></div>
+                        <div class="section-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="resetMasteryFilters()">⟲ Reset Filters</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadHeatmap()">↻ Refresh</button>
+                        </div>
+                    </div>
+                    <div class="filter-bar">
+                        <div class="filter-group"><label class="form-label">Level</label>
+                            <select class="form-control" id="hm-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
+                        </div>
+                        <div class="filter-group"><label class="form-label">Class (required)</label>
+                            <select class="form-control" id="hm-class"></select>
+                        </div>
+                        <div class="filter-group"><label class="form-label">Subject</label>
+                            <select class="form-control" id="hm-subject"><option value="">All Subjects</option></select>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">Topic Mastery Map</span>
+                                <div style="display:flex;gap:8px;font-size:11px;"><span>🟩 ≥75%</span><span>🟨 50-74%</span><span>🟥 &lt;50%</span></div>
+                            </div>
+                            <div id="hm-container" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div>Select a class</div></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><span class="card-title">Critical Gaps</span><span class="badge badge-danger" id="a-gap-count">—</span></div>
+                            <div id="a-gap-list" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CURRICULUM ===== -->
+                <div id="a-curriculum" class="tab-content">
+                    <div class="section-header">
+                        <div><h2>📚 Curriculum Hierarchy</h2><p>REB curriculum structure: Levels → Classes → Subjects</p></div>
+                        <div class="section-actions">
+                            <button class="btn btn-primary btn-sm" onclick="triggerRebSync()">⟳ Sync REB</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadCurriculumData()">↻ Refresh</button>
+                        </div>
+                    </div>
+                    <div class="alert alert-success mb-3" id="curriculum-sync-note"><span>📡</span><span>Loading curriculum data...</span></div>
+                    <div id="curriculum-hierarchy" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
+                </div>
+
+                <!-- ===== TEACHER GUIDES ===== -->
+                <div id="a-guides" class="tab-content">
+                    <div class="section-header">
+                        <div><h2>📖 Teacher Guides</h2><p>Official REB teaching guides, by Level → Class → Subject</p></div>
+                        <div class="section-actions">
+                            <button class="btn btn-primary btn-sm" onclick="triggerRebSync()">⟳ Sync</button>
+                            <button class="btn btn-secondary btn-sm" onclick="resetGuideFilters()">⟲ Reset Filters</button>
+                        </div>
+                    </div>
+                    <div class="filter-bar">
+                        <div class="filter-group"><label class="form-label">Level</label>
+                            <select class="form-control" id="guide-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
+                        </div>
+                        <div class="filter-group"><label class="form-label">Class</label>
+                            <select class="form-control" id="guide-class"><option value="">All Classes</option></select>
+                        </div>
+                        <div class="filter-group"><label class="form-label">Subject</label>
+                            <select class="form-control" id="guide-subject"><option value="">All Subjects</option></select>
+                        </div>
+                    </div>
+                    <div id="teacher-guides-container" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div>Loading guides...</div></div>
+                </div>
+
+                <!-- ===== REPORTS ===== -->
+                <div id="a-reports" class="tab-content">
+                    <div class="section-header"><div><h2>AI Reports</h2><p>School compliance and performance reports</p></div><button class="btn btn-primary btn-sm" onclick="generateReport()">🤖 Generate</button></div>
+                    <div id="a-report-content"><div class="loading"><div class="spinner"></div></div></div>
+                </div>
+
+                <!-- ===== NESA ===== -->
+                <div id="a-nesa" class="tab-content">
+                    <div class="section-header"><div><h2>NESA Readiness</h2><p>Candidate readiness overview</p></div></div>
+                    <div id="a-nesa-content"><div class="loading"><div class="spinner"></div></div></div>
+                </div>
+
+                <!-- ===== FEEDBACK ===== -->
+                <div id="a-feedback" class="tab-content">
+                    <div class="section-header"><div><h2>Student Feedback</h2><p>Difficulty index by topic</p></div></div>
+                    <div id="a-feedback-content" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
+                </div>
+
+                <!-- ===== MANAGE USERS ===== -->
+                <div id="a-users" class="tab-content">
+                    <div class="section-header">
+                        <div><h2>👥 Manage Users</h2><p>Create, edit and remove Admin, Teacher, Student and Authority accounts</p></div>
+                        <div class="section-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="loadUsers(usersState.page)">↻ Refresh</button>
+                            <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ New User</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="filter-bar">
+                            <div class="filter-group"><label class="form-label">Role</label>
+                                <select class="form-control" id="users-role-filter" onchange="filterUsersTable()">
+                                    <option value="">All Roles</option>
+                                    <option value="admin">School Admin</option>
+                                    <option value="teacher">Teacher</option>
+                                    <option value="student">Student</option>
+                                    <option value="authority">Education Authority</option>
+                                </select>
+                            </div>
+                            <div class="filter-group"><label class="form-label">Search</label>
+                                <input class="form-control" style="width:200px;" id="users-search" placeholder="Name or email..." oninput="filterUsersTable()">
+                            </div>
+                        </div>
+                        <div class="table-wrap table-scroll">
+                            <table>
+                                <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Class</th><th>Status</th><th>Actions</th></tr></thead>
+                                <tbody id="a-users-tbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+                            </table>
+                        </div>
+                        <div class="flex flex-between mt-3" id="a-users-pager"></div>
+                    </div>
+                </div>
+
+                <!-- ===== SETTINGS ===== -->
+                <div id="a-settings" class="tab-content">
+                    <div class="section-header"><div><h2>⚙️ Settings</h2></div></div>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header"><span class="card-title">🏫 School</span></div>
+                            <div class="form-group"><label class="form-label">School Name</label><input class="form-control" value="Groupe Scolaire du Mont Kigali / APACE"></div>
+                            <div class="form-group"><label class="form-label">Location</label><input class="form-control" value="Kigali, Rwanda"></div>
+                            <div class="form-group"><label class="form-label">API URL</label><input class="form-control" id="settings-api-url" value="http://localhost:8000"></div>
+                            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Save Changes</button>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><span class="card-title">🔔 Thresholds</span></div>
+                            <div class="form-group"><label class="form-label">Pacing Alert (days behind)</label><input class="form-control" type="number" value="5"></div>
+                            <div class="form-group"><label class="form-label">Mastery Intervention (%)</label><input class="form-control" type="number" value="70"></div>
+                            <div class="form-group"><label class="form-label">Compliance Risk (%)</label><input class="form-control" type="number" value="70"></div>
+                            <button class="btn btn-primary btn-sm" onclick="toast('Thresholds saved','success')">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/ui-helpers.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/curriculum-tree.js"></script>
+    <script src="js/tab-dashboard.js"></script>
+    <script src="js/tab-compliance.js"></script>
+    <script src="js/tab-mastery.js"></script>
+    <script src="js/tab-curriculum.js"></script>
+    <script src="js/tab-guides.js"></script>
+    <script src="js/tab-reports.js"></script>
+    <script src="js/tab-nesa.js"></script>
+    <script src="js/tab-feedback.js"></script>
+    <script src="js/reb-sync.js"></script>
+    <script src="js/admin-users.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/dashboard-app.js"></script>
+</body>
+</html>
