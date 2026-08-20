@@ -51,7 +51,7 @@ async function submitClassLog() {
     } catch (e) {
         toast('Could not save log: ' + e.message, 'error');
     } finally {
-        btn.disabled = false; btn.textContent = '✅ Save Log';
+        btn.disabled = false; btn.innerHTML = '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> Save Log';
     }
 }
 
@@ -78,6 +78,6 @@ async function loadMyClassLogs() {
             </div>
         ` : '<div class="text-muted text-sm">No class logs yet.</div>';
     } catch (e) {
-        container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }

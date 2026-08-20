@@ -46,12 +46,12 @@ async function loadAvailableTeachers() {
                 <button class="btn ${currentTeacherId === t.id ? 'btn-secondary' : 'btn-primary'} btn-sm"
                         ${currentTeacherId === t.id ? 'disabled' : ''}
                         onclick="pickTeacher(${t.id})">
-                    ${currentTeacherId === t.id ? '✓ Selected' : 'Select'}
+                    ${currentTeacherId === t.id ? '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check</span> Selected' : 'Select'}
                 </button>
             </div>
         `).join('');
     } catch (e) {
-        listEl.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        listEl.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
 

@@ -24,8 +24,32 @@ async function loadMyTopics() {
         populateTopicSubjectFilter();
         renderTopicList();
     } catch (e) {
-        container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
+}
+
+// Add this function after the loadMyTopics function
+function populateTopicSubjectFilter() {
+    const el = document.getElementById('tt-subject-filter');
+    if (!el) return;
+
+    // Get unique subjects from topics cache
+    const subjects = Array.from(
+        new Set(_topicsCache.map(t => t.subject_name).filter(Boolean))
+    ).sort();
+
+    // Also include teacher's subjects if available
+    const teacherSubjects = window._teacherSubjects || [];
+    const allSubjects = [...new Set([...subjects, ...teacherSubjects.map(s => s.name)])];
+
+    el.innerHTML = '<option value="">All Subjects</option>' +
+        allSubjects.map(s => `<option value="${s}">${s}</option>`).join('');
+
+    // Wire up the filter
+    el.onchange = function() {
+        _filterSubject = this.value;
+        renderTopicList();
+    };
 }
 
 async function loadTeacherSubjects() {
@@ -62,7 +86,7 @@ function renderTopicList() {
 
     container.innerHTML = `
         <div class="alert alert-info mb-3" style="display:flex;justify-content:space-between;align-items:center;">
-            <span>📊 <strong>${confirmed}</strong> of <strong>${total}</strong> topics confirmed as taught</span>
+            <span><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span> <strong>${confirmed}</strong> of <strong>${total}</strong> topics confirmed as taught</span>
             <div style="background:var(--gray-100);border-radius:99px;height:8px;width:200px;overflow:hidden;margin-left:12px;">
                 <div style="background:var(--accent);height:100%;width:${Math.round(confirmed/total*100)}%;border-radius:99px;"></div>
             </div>
@@ -70,7 +94,7 @@ function renderTopicList() {
         ${Object.entries(bySubject).map(([group, items]) => `
             <div class="card mb-3">
                 <div class="card-header">
-                    <span class="card-title">📚 ${group}</span>
+                    <span class="card-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span> ${group}</span>
                     <span class="badge badge-${items.filter(t=>t.is_confirmed).length===items.length?'success':'warning'}">
                         ${items.filter(t=>t.is_confirmed).length}/${items.length} done
                     </span>
@@ -87,13 +111,13 @@ function topicRow(t) {
             <div style="width:28px;height:28px;border-radius:50%;background:${color};
                         display:flex;align-items:center;justify-content:center;
                         color:white;font-size:13px;font-weight:700;flex-shrink:0;">
-                ${done ? '✓' : (t.topic_code||'?')}
+                ${done ? '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check</span>' : (t.topic_code||'?')}
             </div>
             <div style="flex:1;min-width:0;">
                 <div style="font-weight:600;font-size:13px;">${t.topic_name}</div>
                 ${done ? `
                     <div class="text-muted text-sm">
-                        ✅ Confirmed · ${t.hours_taught}h taught
+                        <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> Confirmed · ${t.hours_taught}h taught
                         ${t.gave_quiz ? ` · Quiz given · Class avg: ${t.class_average??'—'}%` : ''}
                         ${t.confirmed_at ? ` · ${t.confirmed_at.split('T')[0]}` : ''}
                     </div>` : '<div class="text-muted text-sm">Not yet confirmed</div>'
@@ -101,8 +125,8 @@ function topicRow(t) {
             </div>
             <div style="display:flex;gap:6px;flex-shrink:0;">
                 ${done
-                    ? `<button class="btn btn-secondary btn-sm" onclick="openTopicReport(${t.topic_id},'${t.topic_name.replace(/'/g,"\\'")}',${t.completion_id})">📋 Edit</button>`
-                    : `<button class="btn btn-primary btn-sm"   onclick="openTopicReport(${t.topic_id},'${t.topic_name.replace(/'/g,"\\'")}',${t.completion_id??'null'})">📝 Report</button>`
+                    ? `<button class="btn btn-secondary btn-sm" onclick="openTopicReport(${t.topic_id},'${t.topic_name.replace(/'/g,"\\'")}',${t.completion_id})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">assignment</span> Edit</button>`
+                    : `<button class="btn btn-primary btn-sm"   onclick="openTopicReport(${t.topic_id},'${t.topic_name.replace(/'/g,"\\'")}',${t.completion_id??'null'})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">edit_note</span> Report</button>`
                 }
             </div>
         </div>`;
@@ -117,8 +141,8 @@ function openTopicReport(topicId, topicName, completionId) {
     overlay.className = 'curriculum-popup-overlay';
     overlay.innerHTML = `
         <div class="curriculum-popup" style="max-width:660px;">
-            <button class="cp-close" onclick="document.getElementById('topic-report-overlay').remove()">✕</button>
-            <h3 style="margin-bottom:4px;">📝 Teaching Report</h3>
+            <button class="cp-close" onclick="document.getElementById('topic-report-overlay').remove()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">close</span></button>
+            <h3 style="margin-bottom:4px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">edit_note</span> Teaching Report</h3>
             <div class="cp-meta">${topicName}</div>
 
             <div class="form-group">
@@ -163,11 +187,11 @@ function openTopicReport(topicId, topicName, completionId) {
             <div class="form-group" style="display:flex;align-items:center;gap:10px;background:#f0fdf4;padding:12px;border-radius:10px;border:1px solid #bbf7d0;">
                 <input type="checkbox" id="tr-confirm">
                 <label for="tr-confirm" style="margin:0;font-size:13px;font-weight:600;color:#166534;">
-                    ✅ I confirm this topic has been fully taught — this will unlock quiz access for my students
+                    <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> I confirm this topic has been fully taught — this will unlock quiz access for my students
                 </label>
             </div>
             <button class="btn btn-primary btn-block" onclick="submitTopicReport(${topicId}, ${completionId === null ? 'null' : completionId})">
-                💾 Save Teaching Report
+                <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">save</span> Save Teaching Report
             </button>
         </div>`;
     overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
@@ -291,7 +315,7 @@ async function submitTopicReport(topicId, completionId) {
             throw new Error(errorMsg);
         }
 
-        toast(c('tr-confirm') ? '✅ Topic confirmed — students can now quiz on it!' : '📋 Report saved successfully!', 'success');
+        toast(c('tr-confirm') ? '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> Topic confirmed — students can now quiz on it!' : '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">assignment</span> Report saved successfully!', 'success');
         
         // Close the modal
         document.getElementById('topic-report-overlay')?.remove();
@@ -306,7 +330,7 @@ async function submitTopicReport(topicId, completionId) {
         console.error('Submit error:', e);
         toast(e.message || 'An error occurred saving the report', 'error');
     } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '💾 Save Teaching Report'; }
+        if (btn) { btn.disabled = false; btn.innerHTML = '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">save</span> Save Teaching Report'; }
     }
 }
 
@@ -355,6 +379,6 @@ async function loadStudentQuizActivity() {
                 </div>`;
         }).join('');
     } catch (e) {
-        container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }

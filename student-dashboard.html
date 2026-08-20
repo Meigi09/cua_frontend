@@ -33,15 +33,15 @@
             <aside class="sidebar" id="student-sidebar">
                 <div class="sidebar-section">
                     <div class="sidebar-label">My Progress</div>
-                    <div class="sidebar-item active" data-tab="s-mastery"    onclick="showStudentTab('s-mastery',this)">   <span class="icon">🧠</span> My Mastery</div>
-                    <div class="sidebar-item"         data-tab="s-results"   onclick="showStudentTab('s-results',this)">    <span class="icon">📋</span> My Results</div>
+                    <div class="sidebar-item active" data-tab="s-mastery"    onclick="showStudentTab('s-mastery',this)">   <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">psychology</span></span> My Mastery</div>
+                    <div class="sidebar-item"         data-tab="s-results"   onclick="showStudentTab('s-results',this)">    <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">assignment</span></span> My Results</div>
                     
                 </div>
                 <div class="sidebar-section">
                     <div class="sidebar-label">Practice</div>
-                    <div class="sidebar-item" data-tab="s-quiz"       onclick="showStudentTab('s-quiz',this)">       <span class="icon">🎯</span> Practice Quiz</div>
-                    <div class="sidebar-item" data-tab="s-simulation" onclick="showStudentTab('s-simulation',this)"> <span class="icon">📝</span> Exam Simulation</div>
-                    <div class="sidebar-item" data-tab="s-feedback"   onclick="showStudentTab('s-feedback',this)">   <span class="icon">💬</span> Give Feedback</div>
+                    <div class="sidebar-item" data-tab="s-quiz"       onclick="showStudentTab('s-quiz',this)">       <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">track_changes</span></span> Practice Quiz</div>
+                    <div class="sidebar-item" data-tab="s-simulation" onclick="showStudentTab('s-simulation',this)"> <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">edit_note</span></span> Exam Simulation</div>
+                    <div class="sidebar-item" data-tab="s-feedback"   onclick="showStudentTab('s-feedback',this)">   <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">chat</span></span> Give Feedback</div>
                 </div>
             </aside>
 
@@ -56,7 +56,7 @@
                             <div id="sm-records" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
                         </div>
                         <div class="card">
-                            <div class="card-header"><span class="card-title">⚠️ Your Top Gaps</span></div>
+                            <div class="card-header"><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">warning</span> Your Top Gaps</span></div>
                             <div class="filter-bar" style="margin-bottom:10px;padding:0;border:none;background:none;">
                                 <div class="filter-group"><label class="form-label">Subject</label><select class="form-control" id="sm-subject"><option value="">All My Subjects</option></select></div>
                             </div>
@@ -74,7 +74,7 @@
                         <div class="filter-bar" style="padding:0;border:none;background:none;">
                             <div class="filter-group" style="flex:1;"><label class="form-label">Subject</label><select class="form-control" id="quiz-subject"><option value="">Select a subject...</option></select></div>
                             <div class="filter-group" style="flex:1;"><label class="form-label">Topic (optional)</label><select class="form-control" id="quiz-topic"><option value="">All topics</option></select></div>
-                            <button class="btn btn-primary" onclick="generateQuiz()">🎲 Generate Quiz</button>
+                            <button class="btn btn-primary" onclick="generateQuiz()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">casino</span> Generate Quiz</button>
                         </div>
                     </div>
                     <div id="quiz-area"></div>
@@ -92,7 +92,7 @@
 
                 <!-- ===== MY RESULTS ===== -->
                 <div id="s-results" class="tab-content">
-                    <div class="section-header"><div><h2>My Results</h2><p>Your past quiz and exam attempts</p></div><button class="btn btn-secondary btn-sm" onclick="loadMyResults()">↻ Refresh</button></div>
+                    <div class="section-header"><div><h2>My Results</h2><p>Your past quiz and exam attempts</p></div><button class="btn btn-secondary btn-sm" onclick="loadMyResults()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh</button></div>
                     <div class="card"><div id="sr-container"><div class="loading"><div class="spinner"></div></div></div></div>
                 </div>
 
@@ -114,7 +114,7 @@
                             </select>
                         </div>
                         <div class="form-group"><label class="form-label">Comment (optional)</label><textarea class="form-control" id="fb-comment" placeholder="What made it hard?"></textarea></div>
-                        <button class="btn btn-primary btn-sm" id="fb-submit-btn" onclick="submitFeedback()">📨 Submit Feedback</button>
+                        <button class="btn btn-primary btn-sm" id="fb-submit-btn" onclick="submitFeedback()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">mail</span> Submit Feedback</button>
                     </div>
                     <div class="card"><div class="card-header"><span class="card-title">My Feedback History</span></div><div id="fb-history" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div></div>
                 </div>
@@ -123,6 +123,7 @@
         </div>
     </div>
 
+    <script src="js/icons.js"></script>
     <script src="js/config.js"></script>
     <script src="js/ui-helpers.js"></script>
     <script src="js/auth.js"></script>

@@ -38,6 +38,6 @@ async function loadMyPacing() {
             </div>
         `;
     } catch (e) {
-        result.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        result.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }

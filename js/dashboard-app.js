@@ -44,7 +44,7 @@ function roleLabel(role) {
   );
 }
 
-// Make every stat card on the dashboard clickable → right tab
+// Make every stat card on the dashboard clickable <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_forward</span> right tab
 function wireCardClicks() {
   // Retry after data renders
   setTimeout(() => {

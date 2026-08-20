@@ -50,9 +50,9 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
     overlay.className = 'curriculum-popup-overlay';
     overlay.innerHTML = `
         <div class="curriculum-popup">
-            <button class="cp-close" onclick="this.closest('.curriculum-popup-overlay').remove()">✕</button>
+            <button class="cp-close" onclick="this.closest('.curriculum-popup-overlay').remove()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">close</span></button>
             <h3>${subjectName}</h3>
-            <div class="cp-meta">🎓 ${classCode || '—'}</div>
+            <div class="cp-meta"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">school</span> ${classCode || '—'}</div>
             <div id="cp-body"><div class="loading"><div class="spinner"></div></div></div>
         </div>
     `;
@@ -79,7 +79,7 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
 
         document.getElementById('cp-body').innerHTML = `
             <div class="cp-section">
-                <div class="cp-section-title">📊 Progress</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span> Progress</div>
                 <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
                     <span>${coveredTopics} of ${totalTopics} topics assessed</span>
                     <strong>${progress}%</strong>
@@ -89,7 +89,7 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
             </div>
 
             <div class="cp-section">
-                <div class="cp-section-title">📚 Topics / Modules (${totalTopics})</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span> Topics / Modules (${totalTopics})</div>
                 ${topics.length ? `
                     <div style="max-height:260px;overflow-y:auto;">
                         ${topics.map((t,i) => {
@@ -110,12 +110,12 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
 
             ${topics[0]?.learning_objectives ? `
             <div class="cp-section">
-                <div class="cp-section-title">🎯 Learning Objectives</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">track_changes</span> Learning Objectives</div>
                 <div style="font-size:13px;line-height:1.7;color:var(--gray-700);">${topics[0].learning_objectives}</div>
             </div>` : ''}
         `;
     } catch (e) {
-        document.getElementById('cp-body').innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        document.getElementById('cp-body').innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
 
@@ -187,12 +187,12 @@ const CBC_RATIONALE = {
 };
 
 const CBC_GENERIC_COMPETENCES = [
-    { icon: '🧠', name: 'Critical Thinking', desc: 'Think reflectively, broadly and logically — weigh evidence and make decisions based on experience.' },
-    { icon: '💡', name: 'Creativity & Innovation', desc: 'Respond creatively to challenges — generate original ideas and apply them in learning situations.' },
-    { icon: '🔍', name: 'Research & Problem Solving', desc: 'Be resourceful in finding answers — produce new knowledge based on research and sound judgment.' },
-    { icon: '💬', name: 'Communication', desc: 'Convey information confidently through speaking and writing in a range of social and cultural contexts.' },
-    { icon: '🤝', name: 'Co-operation & Life Skills', desc: 'Work effectively with others — develop interpersonal and social skills essential for the workplace.' },
-    { icon: '📖', name: 'Lifelong Learning', desc: 'Take initiative to update knowledge and skills — adapt to evolving knowledge and technology advances.' },
+    { icon: '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">psychology</span>', name: 'Critical Thinking', desc: 'Think reflectively, broadly and logically — weigh evidence and make decisions based on experience.' },
+    { icon: '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">lightbulb</span>', name: 'Creativity & Innovation', desc: 'Respond creatively to challenges — generate original ideas and apply them in learning situations.' },
+    { icon: '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">search</span>', name: 'Research & Problem Solving', desc: 'Be resourceful in finding answers — produce new knowledge based on research and sound judgment.' },
+    { icon: '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">chat</span>', name: 'Communication', desc: 'Convey information confidently through speaking and writing in a range of social and cultural contexts.' },
+    { icon: '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">handshake</span>', name: 'Co-operation & Life Skills', desc: 'Work effectively with others — develop interpersonal and social skills essential for the workplace.' },
+    { icon: '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span>', name: 'Lifelong Learning', desc: 'Take initiative to update knowledge and skills — adapt to evolving knowledge and technology advances.' },
 ];
 
 async function showSubjectPopup(subjectId, subjectName, classCode) {
@@ -204,9 +204,9 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
     overlay.className = 'curriculum-popup-overlay';
     overlay.innerHTML = `
         <div class="curriculum-popup" style="max-width:700px;">
-            <button class="cp-close" onclick="document.getElementById('subject-popup-overlay').remove()">✕</button>
+            <button class="cp-close" onclick="document.getElementById('subject-popup-overlay').remove()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">close</span></button>
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
-                <div style="background:var(--accent);color:white;border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📚</div>
+                <div style="background:var(--accent);color:white;border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span></div>
                 <div>
                     <h3 style="margin:0;">${subjectName}</h3>
                     <div class="cp-meta" style="margin:0;">
@@ -244,13 +244,13 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
             <!-- Rationale -->
             ${rationale ? `
             <div class="cp-section">
-                <div class="cp-section-title">📋 About this Subject (CBC Framework)</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">assignment</span> About this Subject (CBC Framework)</div>
                 <div style="font-size:13px;line-height:1.7;color:var(--gray-700);background:var(--gray-50);padding:12px 14px;border-radius:10px;border-left:3px solid var(--accent);">${rationale}</div>
             </div>` : ''}
 
             <!-- Progress -->
             <div class="cp-section">
-                <div class="cp-section-title">📊 Class Progress</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span> Class Progress</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
                     <div style="text-align:center;background:var(--gray-50);border-radius:10px;padding:10px;">
                         <div style="font-size:24px;font-weight:800;color:var(--accent);">${totalTopics}</div>
@@ -276,7 +276,7 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
 
             <!-- Topics -->
             <div class="cp-section">
-                <div class="cp-section-title">📚 Topics / Units (${totalTopics})</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span> Topics / Units (${totalTopics})</div>
                 ${topics.length ? `
                     <div style="max-height:220px;overflow-y:auto;">
                         ${topics.map((t,i) => {
@@ -296,7 +296,7 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
 
             <!-- CBC Generic Competences -->
             <div class="cp-section">
-                <div class="cp-section-title">🎯 CBC Generic Competences Developed</div>
+                <div class="cp-section-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">track_changes</span> CBC Generic Competences Developed</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                     ${CBC_GENERIC_COMPETENCES.map(c => `
                         <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:8px 10px;font-size:12px;">
@@ -307,6 +307,292 @@ async function showSubjectPopup(subjectId, subjectName, classCode) {
             </div>
         `;
     } catch (e) {
-        document.getElementById('sp-body').innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        document.getElementById('sp-body').innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
+}
+
+// ============================================
+// DOCUMENT VIEWER - View documents inline
+// Supports: PDF, DOCX, DOC, PPTX, ODT, TXT
+// ============================================
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+function viewDocumentInline(fileUrl, filename) {
+    // Check file extension
+    const ext = (filename || fileUrl || '').split('.').pop().toLowerCase();
+    const displayName = filename || 'Document';
+    
+    // Create viewer overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'doc-viewer-overlay';
+    overlay.className = 'curriculum-popup-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;flex-direction:column;';
+    
+    overlay.innerHTML = `
+        <div style="background:#1a1a2e;color:white;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;flex-shrink:0;border-radius:16px 16px 0 0;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:20px;">${getFileIcon(ext)}</span>
+                <div>
+                    <div style="font-weight:700;font-size:14px;">${displayName}</div>
+                    <div style="font-size:11px;opacity:0.7;">${ext.toUpperCase()} · Click outside to close</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <a href="${fileUrl}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;text-decoration:none;padding:6px 14px;border-radius:6px;font-size:12px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</a>
+                <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;" onclick="document.getElementById('doc-viewer-overlay').remove()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">close</span> Close</button>
+            </div>
+        </div>
+        <div id="doc-viewer-content" style="flex:1;overflow:auto;padding:20px;background:#f5f5f5;display:flex;justify-content:center;align-items:flex-start;">
+            <div class="loading"><div class="spinner"></div>Loading document...</div>
+        </div>
+    `;
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) overlay.remove();
+    });
+    document.body.appendChild(overlay);
+    
+    // Load the document based on file type
+    const contentEl = document.getElementById('doc-viewer-content');
+    
+    // Handle different file types - pass displayName to each loader
+    const handlers = {
+        'pdf': () => loadPDF(fileUrl, contentEl),
+        'docx': () => loadDOCX(fileUrl, contentEl, displayName),
+        'doc': () => loadDOCX(fileUrl, contentEl, displayName),
+        'pptx': () => loadPPTX(fileUrl, contentEl, displayName),
+        'ppt': () => loadPPTX(fileUrl, contentEl, displayName),
+        'odt': () => loadODT(fileUrl, contentEl, displayName),
+        'txt': () => loadTXT(fileUrl, contentEl),
+    };
+    
+    const handler = handlers[ext] || (() => loadGeneric(fileUrl, contentEl, ext, displayName));
+    handler();
+}
+
+function getFileIcon(ext) {
+    const icons = {
+        'pdf': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span>',
+        'docx': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">edit_note</span>',
+        'doc': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">edit_note</span>',
+        'pptx': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span>',
+        'ppt': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span>',
+        'odt': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span>',
+        'txt': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">assignment</span>',
+        'xlsx': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">trending_up</span>',
+        'xls': '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">trending_up</span>',
+    };
+    return icons[ext] || '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span>';
+}
+
+// ── PDF Loader ──
+async function loadPDF(url, container) {
+    try {
+        // Fetch the PDF
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch PDF: ${response.status}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        
+        // Load PDF document
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const numPages = pdf.numPages;
+        
+        // Clear container
+        container.innerHTML = '';
+        
+        // Add header
+        const header = document.createElement('div');
+        header.style.cssText = 'max-width:900px;width:100%;';
+        header.innerHTML = `
+            <div style="background:white;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-weight:600;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span> PDF Document</span>
+                    <span style="font-size:12px;color:var(--gray-500);">${numPages} page${numPages > 1 ? 's' : ''}</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+        `;
+        container.appendChild(header);
+        const pagesContainer = header.querySelector('div:last-child');
+        
+        // Render each page
+        for (let i = 1; i <= numPages; i++) {
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 1.2 });
+            
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.cssText = 'width:100%;height:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);background:white;';
+            
+            // Render page
+            const context = canvas.getContext('2d');
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            await page.render(renderContext).promise;
+            
+            // Add to container
+            const pageWrapper = document.createElement('div');
+            pageWrapper.style.marginBottom = '8px';
+            pageWrapper.appendChild(canvas);
+            pagesContainer.appendChild(pageWrapper);
+        }
+        
+    } catch (error) {
+        console.error('PDF load error:', error);
+        container.innerHTML = `
+            <div style="background:white;border-radius:12px;padding:40px;text-align:center;max-width:600px;width:100%;">
+                <div style="font-size:48px;margin-bottom:16px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span></div>
+                <h3 style="margin-bottom:8px;">Could not load PDF</h3>
+                <p style="color:var(--gray-500);font-size:13px;">${error.message || 'The document could not be loaded'}</p>
+                <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="window.open('${url}', '_blank')"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download to view</button>
+            </div>
+        `;
+    }
+}
+
+// ── DOCX Loader ──
+async function loadDOCX(url, container, displayName) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch document: ${response.status}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        
+        const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+        const html = result.value || '<p>No content found in this document.</p>';
+        
+        container.innerHTML = `
+            <div style="max-width:900px;width:100%;background:white;border-radius:12px;padding:40px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <div style="font-family:Georgia,serif;line-height:1.8;font-size:16px;color:#333;">
+                    ${html}
+                </div>
+                ${result.messages && result.messages.length > 0 ? `
+                    <div style="margin-top:16px;padding:12px;background:#fef3c7;border-radius:8px;font-size:12px;color:#92400e;">
+                        <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${result.messages.map(m => m.message).join('. ')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    } catch (error) {
+        console.error('DOCX load error:', error);
+        container.innerHTML = `
+            <div style="background:white;border-radius:12px;padding:40px;text-align:center;max-width:600px;width:100%;">
+                <div style="font-size:48px;margin-bottom:16px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">edit_note</span></div>
+                <h3 style="margin-bottom:8px;">Could not load document</h3>
+                <p style="color:var(--gray-500);font-size:13px;">${error.message || 'The document could not be loaded'}</p>
+                <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="window.open('${url}', '_blank')"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download to view</button>
+            </div>
+        `;
+    }
+}
+
+// ── PPTX Loader ──
+async function loadPPTX(url, container, displayName) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch presentation: ${response.status}`);
+        }
+        const blob = await response.blob();
+        
+        container.innerHTML = `
+            <div style="background:white;border-radius:12px;padding:40px;text-align:center;max-width:600px;width:100%;">
+                <div style="font-size:48px;margin-bottom:16px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span></div>
+                <h3 style="margin-bottom:8px;">PowerPoint Presentation</h3>
+                <p style="color:var(--gray-500);font-size:13px;">${displayName || 'Presentation'}</p>
+                <div style="margin:20px 0;padding:16px;background:#f0fdf4;border-radius:8px;font-size:13px;color:#166534;">
+                    <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">lightbulb</span> PPTX files can be viewed by downloading and opening in PowerPoint or Google Slides.
+                </div>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <a href="${url}" target="_blank" class="btn btn-primary"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</a>
+                    <a href="#" class="btn btn-secondary" onclick="event.preventDefault();window.open('https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true','_blank')">
+                        <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">link</span> Open with Google Slides
+                    </a>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('PPTX load error:', error);
+        container.innerHTML = `
+            <div style="background:white;border-radius:12px;padding:40px;text-align:center;max-width:600px;width:100%;">
+                <div style="font-size:48px;margin-bottom:16px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span></div>
+                <h3 style="margin-bottom:8px;">Could not load presentation</h3>
+                <button class="btn btn-primary btn-sm" onclick="window.open('${url}', '_blank')"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</button>
+            </div>
+        `;
+    }
+}
+
+// ── ODT Loader ──
+async function loadODT(url, container, displayName) {
+    container.innerHTML = `
+        <div style="background:white;border-radius:12px;padding:40px;text-align:center;max-width:600px;width:100%;">
+            <div style="font-size:48px;margin-bottom:16px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span></div>
+            <h3 style="margin-bottom:8px;">OpenDocument Text</h3>
+            <p style="color:var(--gray-500);font-size:13px;">${displayName || 'Document'}</p>
+            <div style="margin:20px 0;padding:16px;background:#f0fdf4;border-radius:8px;font-size:13px;color:#166534;">
+                <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">lightbulb</span> ODT files can be opened with LibreOffice or Google Docs.
+            </div>
+            <a href="${url}" target="_blank" class="btn btn-primary"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</a>
+        </div>
+    `;
+}
+
+// ── TXT Loader ──
+async function loadTXT(url, container) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch text file: ${response.status}`);
+        }
+        const text = await response.text();
+        
+        container.innerHTML = `
+            <div style="max-width:900px;width:100%;background:white;border-radius:12px;padding:30px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <pre style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.7;margin:0;color:#333;">${escapeHtml(text)}</pre>
+            </div>
+        `;
+    } catch (error) {
+        console.error('TXT load error:', error);
+        container.innerHTML = `
+            <div style="background:white;border-radius:12px;padding:40px;text-align:center;">
+                <button class="btn btn-primary" onclick="window.open('${url}', '_blank')"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</button>
+            </div>
+        `;
+    }
+}
+
+// ── Generic Loader ──
+function loadGeneric(url, container, ext, displayName) {
+    container.innerHTML = `
+        <div style="background:white;border-radius:12px;padding:40px;text-align:center;max-width:600px;width:100%;">
+            <div style="font-size:48px;margin-bottom:16px;">${getFileIcon(ext)}</div>
+            <h3 style="margin-bottom:8px;">${ext ? ext.toUpperCase() : 'Unknown'} File</h3>
+            <p style="color:var(--gray-500);font-size:13px;">${displayName || 'Document'}</p>
+            <div style="margin:20px 0;padding:16px;background:#f0fdf4;border-radius:8px;font-size:13px;color:#166534;">
+                <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">lightbulb</span> This file type is not supported for inline viewing. Please download to view.
+            </div>
+            <a href="${url}" target="_blank" class="btn btn-primary"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</a>
+        </div>
+    `;
+}
+
+// ── Helper: Escape HTML ──
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }

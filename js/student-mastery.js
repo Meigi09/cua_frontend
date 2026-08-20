@@ -50,7 +50,7 @@ async function loadMyMasteryOverview() {
       })
       .join("");
   } catch (e) {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }
 
@@ -84,8 +84,8 @@ async function loadMyGaps() {
             `;
           })
           .join("")
-      : '<div class="alert alert-success">No concept gaps found 🎉</div>';
+      : '<div class="alert alert-success">No concept gaps found <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">celebration</span></div>';
   } catch (e) {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }

@@ -19,15 +19,15 @@ async function loadGapAlerts() {
                     <div style="font-weight:600;">${a.topic_name || "—"}</div>
                     <div class="text-muted text-sm">${a.student_name || "Student"} · mastery ${Math.round(parseFloat(a.mastery || 0) * 100)}% · flagged ${a.created_at ? new Date(a.created_at).toLocaleDateString() : ""}</div>
                 </div>
-                <button class="btn btn-success btn-sm" onclick="resolveGapAlert(${a.id}, this)">✓ Mark Resolved</button>
+                <button class="btn btn-success btn-sm" onclick="resolveGapAlert(${a.id}, this)"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check</span> Mark Resolved</button>
             </div>
         `,
           )
           .join("")
-      : '<div class="alert alert-success">No unresolved gap alerts 🎉</div>';
+      : '<div class="alert alert-success">No unresolved gap alerts <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">celebration</span></div>';
     document.getElementById("tg-count").textContent = alerts.length;
   } catch (e) {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }
 
@@ -41,6 +41,6 @@ async function resolveGapAlert(id, btn) {
   } catch (e) {
     toast("Could not resolve: " + e.message, "error");
     btn.disabled = false;
-    btn.textContent = "✓ Mark Resolved";
+    btn.innerHTML = "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check</span> Mark Resolved";
   }
 }

@@ -24,7 +24,7 @@ async function loadUsers(page = 1) {
         renderUsersTable();
         renderUsersPager();
     } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="6"><div class="alert alert-warning">⚠️ ${e.message}</div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6"><div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div></td></tr>`;
     }
 }
 
@@ -46,8 +46,8 @@ function renderUsersTable() {
             <td>${u.role === 'student' ? (u.class_level || '—') + (u.stream ? ' / ' + u.stream : '') : '—'}</td>
             <td>${u.is_active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-neutral">Inactive</span>'}</td>
             <td style="white-space:nowrap;">
-                <button class="btn btn-secondary btn-sm" onclick="openUserModal(${u.id})">✎ Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id}, '${(u.full_name || u.email).replace(/'/g, "\\'")}')">🗑</button>
+                <button class="btn btn-secondary btn-sm" onclick="openUserModal(${u.id})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">edit</span> Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id}, '${(u.full_name || u.email).replace(/'/g, "\\'")}')"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">delete</span></button>
             </td>
         </tr>
     `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-500);">No users match</td></tr>';
@@ -58,8 +58,8 @@ function renderUsersPager() {
     el.innerHTML = `
         <span class="text-muted text-sm">${usersState.count} users · Page ${usersState.page} of ${usersState.totalPages}</span>
         <div class="gap-2 flex">
-            <button class="btn btn-secondary btn-sm" ${usersState.page <= 1 ? 'disabled' : ''} onclick="loadUsers(${usersState.page - 1})">← Prev</button>
-            <button class="btn btn-secondary btn-sm" ${usersState.page >= usersState.totalPages ? 'disabled' : ''} onclick="loadUsers(${usersState.page + 1})">Next →</button>
+            <button class="btn btn-secondary btn-sm" ${usersState.page <= 1 ? 'disabled' : ''} onclick="loadUsers(${usersState.page - 1})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_back</span> Prev</button>
+            <button class="btn btn-secondary btn-sm" ${usersState.page >= usersState.totalPages ? 'disabled' : ''} onclick="loadUsers(${usersState.page + 1})">Next <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_forward</span></button>
         </div>
     `;
 }

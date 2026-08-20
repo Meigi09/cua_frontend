@@ -40,7 +40,7 @@ async function loadSimulationList() {
         )
         .join("");
     } catch (e) {
-        container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
 
@@ -57,7 +57,7 @@ async function startSimulation(assessmentId) {
         listCard.style.display = 'none';
         renderSimulation();
     } catch (e) {
-        area.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        area.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
 
@@ -102,7 +102,7 @@ function renderSimulation() {
 
         <div class="card" style="text-align:center;padding:16px;">
             <button class="btn btn-primary" style="min-width:200px;" onclick="submitSimulation()">
-                ✅ Submit Exam
+                <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> Submit Exam
             </button>
             <div class="text-muted text-sm mt-2">Once submitted your answers cannot be changed.</div>
         </div>
@@ -178,7 +178,7 @@ async function submitSimulation(autoSubmit = false) {
         simSession = null;
         renderSimResult(result);
     } catch (e) {
-        area.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        area.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
 
@@ -188,7 +188,7 @@ function renderSimResult(result) {
     const listCard = document.getElementById('sim-list-card');
     area.innerHTML = `
         <div class="card text-center mb-3">
-            <div style="font-size:44px;margin-bottom:8px;">${result.passed ? '🎉' : '💪'}</div>
+            <div style="font-size:44px;margin-bottom:8px;">${result.passed ? '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">celebration</span>' : '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">fitness_center</span>'}</div>
             <div style="font-size:32px;font-weight:800;color:${result.passed ? 'var(--success)' : 'var(--warning)'};">
                 ${result.percentage}%
             </div>
@@ -213,7 +213,7 @@ function renderSimResult(result) {
             `).join('') || '<div class="text-muted text-sm">No per-topic breakdown available.</div>'}
         </div>
 
-        <button class="btn btn-secondary btn-block" onclick="resetSimulation()">← Back to exam list</button>
+        <button class="btn btn-secondary btn-block" onclick="resetSimulation()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_back</span> Back to exam list</button>
     `;
 }
 

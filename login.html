@@ -9,10 +9,55 @@
 </head>
 <body class="login-page">
     <div id="toasts"></div>
+
+    <!-- Left: the pitch's own model (Curriculum -> Teaching -> Analysis ->
+         Intervention), so the first screen anyone sees -- judge or user --
+         states what the product does before they even sign in. -->
+    <div class="login-narrative">
+        <div class="crest-mark"><span class="material-symbols-outlined ui-icon" aria-hidden="true">explore</span> C³UA</div>
+        <h1>See whether teaching matches the curriculum — and whether it's actually understood.</h1>
+        <p class="lede">C³UA connects what the curriculum requires, what teachers deliver, and what students understand — so gaps surface while there's still time to act, not after the exam.</p>
+
+        <div class="login-flow">
+            <div class="login-flow-step">
+                <div class="step-marker"><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span></div>
+                <div>
+                    <div class="step-title">Curriculum</div>
+                    <div class="step-desc">REB syllabus documents parsed into subjects, topics and learning objectives.</div>
+                </div>
+            </div>
+            <div class="login-flow-step">
+                <div class="step-marker"><span class="material-symbols-outlined ui-icon" aria-hidden="true">edit_note</span></div>
+                <div>
+                    <div class="step-title">Teaching</div>
+                    <div class="step-desc">Lesson plans and class logs compared against what the curriculum expects, week by week.</div>
+                </div>
+            </div>
+            <div class="login-flow-step">
+                <div class="step-marker"><span class="material-symbols-outlined ui-icon" aria-hidden="true">psychology</span></div>
+                <div>
+                    <div class="step-title">Understanding</div>
+                    <div class="step-desc">Quiz and assessment responses analyzed for concept mastery, not just scores.</div>
+                </div>
+            </div>
+            <div class="login-flow-step">
+                <div class="step-marker"><span class="material-symbols-outlined ui-icon" aria-hidden="true">track_changes</span></div>
+                <div>
+                    <div class="step-title">Intervention</div>
+                    <div class="step-desc">Gaps ranked and surfaced to teachers and admins early enough to act on.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="narrative-footer">Initial deployment: Groupe Scolaire du Mont Kigali / APACE, Kigali, Rwanda</div>
+    </div>
+
+    <!-- Right: the actual sign-in form -->
+    <div class="login-form-side">
     <div class="login-box">
-        <a class="back-link" href="c3ua.html">← Back to C³UA overview</a>
+        <a class="back-link" href="c3ua.html"><span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_back</span> Back to C³UA overview</a>
         <div class="logo">
-            <div class="crest">🧭</div>
+            <div class="crest"><span class="material-symbols-outlined ui-icon" aria-hidden="true">explore</span></div>
             <h1>C³UA</h1>
             <p>Curriculum Compliance &amp; Concept Understanding Auditor</p>
         </div>
@@ -21,16 +66,16 @@
             <div style="font-size:12px;font-weight:600;color:var(--gray-500);margin-bottom:6px;">SELECT ROLE</div>
             <div class="role-selector" id="role-selector">
                 <div class="role-option active" data-role="admin" onclick="selectRole('admin',this)">
-                    <span class="emoji">👩‍💼</span><span class="label">Admin</span>
+                    <span class="emoji"><span class="material-symbols-outlined ui-icon" aria-hidden="true">person</span>‍<span class="material-symbols-outlined ui-icon" aria-hidden="true">work</span></span><span class="label">Admin</span>
                 </div>
                 <div class="role-option" data-role="teacher" onclick="selectRole('teacher',this)">
-                    <span class="emoji">👨‍🏫</span><span class="label">Teacher</span>
+                    <span class="emoji"><span class="material-symbols-outlined ui-icon" aria-hidden="true">person</span>‍<span class="material-symbols-outlined ui-icon" aria-hidden="true">apartment</span></span><span class="label">Teacher</span>
                 </div>
                 <div class="role-option" data-role="student" onclick="selectRole('student',this)">
-                    <span class="emoji">🧑‍🎓</span><span class="label">Student</span>
+                    <span class="emoji"><span class="material-symbols-outlined ui-icon" aria-hidden="true">person</span>‍<span class="material-symbols-outlined ui-icon" aria-hidden="true">school</span></span><span class="label">Student</span>
                 </div>
                 <div class="role-option" data-role="authority" onclick="selectRole('authority',this)">
-                    <span class="emoji">🏛️</span><span class="label">Authority</span>
+                    <span class="emoji"><span class="material-symbols-outlined ui-icon" aria-hidden="true">account_balance</span></span><span class="label">Authority</span>
                 </div>
             </div>
         </div> -->
@@ -44,10 +89,12 @@
         </div>
         <button class="btn btn-primary btn-block" id="login-btn" onclick="doLogin()">Sign In</button>
         <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--gray-400);">
-            🔒 Secure · JWT Authentication · Session: 8h
+            <span class="material-symbols-outlined ui-icon" aria-hidden="true">lock</span> Secure · JWT Authentication · Session: 8h
         </div>
     </div>
+    </div>
 
+    <script src="js/icons.js"></script>
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script>

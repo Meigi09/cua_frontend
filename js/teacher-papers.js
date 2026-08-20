@@ -41,7 +41,7 @@ async function loadMyPastPapers() {
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
                             <span style="font-weight:700;font-size:13px;">${a.title}</span>
                             ${isNesa ? '<span class="badge badge-info" style="font-size:10px;">NESA</span>' : '<span class="badge badge-neutral" style="font-size:10px;">Uploaded</span>'}
-                            ${published ? '<span class="badge badge-success" style="font-size:10px;">✓ Published</span>' : ""}
+                            ${published ? '<span class="badge badge-success" style="font-size:10px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check</span> Published</span>' : ""}
                         </div>
                         <div class="text-muted text-sm">
                             ${a.question_count} question(s) ·
@@ -49,16 +49,16 @@ async function loadMyPastPapers() {
                         </div>
                     </div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
-                        ${!hasQ ? `<button class="btn btn-primary btn-sm" onclick="extractPaper(${a.id})">⚙️ Extract</button>` : ""}
-                        ${hasQ ? `<button class="btn btn-secondary btn-sm" onclick="reviewPastPaper(${a.id})">📋 Review</button>` : ""}
-                        ${!published && hasQ ? `<button class="btn btn-sm" style="background:#dcfce7;color:#166534;" onclick="publishPaper(${a.id})">📢 Publish</button>` : ""}
+                        ${!hasQ ? `<button class="btn btn-primary btn-sm" onclick="extractPaper(${a.id})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">settings</span> Extract</button>` : ""}
+                        ${hasQ ? `<button class="btn btn-secondary btn-sm" onclick="reviewPastPaper(${a.id})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">assignment</span> Review</button>` : ""}
+                        ${!published && hasQ ? `<button class="btn btn-sm" style="background:#dcfce7;color:#166534;" onclick="publishPaper(${a.id})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">campaign</span> Publish</button>` : ""}
                     </div>
                 </div>
             </div>`;
       })
       .join("");
   } catch (e) {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }
 
@@ -143,12 +143,12 @@ async function reviewPastPaper(assessmentId) {
     );
     if (!questions.length) {
       container.innerHTML =
-        '<div class="alert alert-success">✅ All questions reviewed and approved for this paper.</div>';
+        '<div class="alert alert-success"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> All questions reviewed and approved for this paper.</div>';
       return;
     }
     container.innerHTML = questions.map((q) => renderReviewCard(q)).join("");
   } catch (e) {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }
 
@@ -176,7 +176,7 @@ function renderReviewCard(q) {
             }
             <div style="display:flex;gap:8px;align-items:center;">
                 <label class="text-sm">Marks: <input type="number" class="form-control" style="width:70px;display:inline-block;" id="q-marks-${q.id}" value="${q.marks}"></label>
-                <button class="btn btn-primary btn-sm" onclick="approveQuestion(${q.id})">✅ Approve</button>
+                <button class="btn btn-primary btn-sm" onclick="approveQuestion(${q.id})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> Approve</button>
             </div>
         </div>
     `;

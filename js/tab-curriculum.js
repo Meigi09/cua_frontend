@@ -1,6 +1,6 @@
 // ============================================
 // C3UA — CURRICULUM HIERARCHY TAB v3
-// Subject chips are clickable → CBC popup
+// Subject chips are clickable <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_forward</span> CBC popup
 // Shows ALL subjects from teacher guides
 // ============================================
 
@@ -23,7 +23,7 @@ async function loadCurriculumData() {
         return;
     }
 
-    // Build a lookup of subjectName+classCode → subject id from the tree
+    // Build a lookup of subjectName+classCode <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_forward</span> subject id from the tree
     const subjectLookup = {};
     levelData.forEach(lv => lv.grades.forEach(g =>
         g.subjects.forEach(s => { subjectLookup[`${s.name}|${g.class_code}`] = s; })
@@ -85,5 +85,5 @@ async function loadCurriculumData() {
     const totalClasses  = levelData.reduce((s,l) => s + l.grades.length, 0);
     const allSubjects   = new Set(levelData.flatMap(l => l.grades.flatMap(g => g.subjects.map(s => s.name))));
     document.getElementById('curriculum-sync-note').innerHTML =
-        `<span>📡</span><span>✅ ${levelData.length} levels, ${totalClasses} classes, ${allSubjects.size} subjects</span>`;
+        `<span><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">cell_tower</span></span><span><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> ${levelData.length} levels, ${totalClasses} classes, ${allSubjects.size} subjects</span>`;
 }

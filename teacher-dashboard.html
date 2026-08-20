@@ -1,233 +1,606 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>C³UA — Teacher Portal</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/dashboard.css" />
+    
+    <!-- Document Viewer Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- For PPTX support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxjs/1.2.0/pptx.min.js"></script>
 </head>
-<body>
+  <body>
     <div id="toasts"></div>
 
-    <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
-        <div class="modal">
-            <div class="modal-header"><h3 id="modal-title">Modal</h3><button class="modal-close" onclick="closeModal()">×</button></div>
-            <div id="modal-body"></div>
+    <div
+      class="modal-overlay"
+      id="modal-overlay"
+      onclick="if (event.target === this) closeModal();"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Modal</h3>
+          <button class="modal-close" onclick="closeModal()">×</button>
         </div>
+        <div id="modal-body"></div>
+      </div>
     </div>
 
     <div id="page-teacher">
-        <nav class="topbar topbar-teacher">
-            <a class="topbar-brand" href="index.html">C³UA <span>GS Mont Kigali / APACE</span><span class="portal-tag">Teacher Portal</span></a>
-            <div class="topbar-right">
-                <div class="topbar-user">
-                    <div class="avatar" id="teacher-avatar">TC</div>
-                    <div><div class="name" id="teacher-name">Teacher</div><div class="role">Teacher</div></div>
-                </div>
-                <button class="btn btn-secondary btn-sm" onclick="doLogout()">Sign Out</button>
+      <nav class="topbar topbar-teacher">
+        <a class="topbar-brand" href="index.html"
+          >C³UA <span>GS Mont Kigali / APACE</span
+          ><span class="portal-tag">Teacher Portal</span></a
+        >
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="avatar" id="teacher-avatar">TC</div>
+            <div>
+              <div class="name" id="teacher-name">Teacher</div>
+              <div class="role">Teacher</div>
             </div>
-        </nav>
-
-        <div class="app-layout">
-            <aside class="sidebar" id="teacher-sidebar">
-                <div class="sidebar-section">
-                    <div class="sidebar-label">My Work</div>
-                    <div class="sidebar-item active" data-tab="t-pacing" onclick="showTeacherTab('t-pacing',this)"><span class="icon">📊</span> My Pacing</div>
-                    <div class="sidebar-item" data-tab="t-plans" onclick="showTeacherTab('t-plans',this)"><span class="icon">📝</span> My Lesson Plans</div>
-                    <div class="sidebar-item" data-tab="t-logs" onclick="showTeacherTab('t-logs',this)"><span class="icon">🗒️</span> My Class Logs</div>
-                    <div class="sidebar-item" data-tab="t-topics" onclick="showTeacherTab('t-topics',this)"><span class="icon">✅</span> My Topics</div>
-                </div>
-                <div class="sidebar-section">
-                    <div class="sidebar-label">My Students</div>
-                    <div class="sidebar-item" data-tab="t-mastery" onclick="showTeacherTab('t-mastery',this)"><span class="icon">🧠</span> Students' Mastery</div>
-                    <div class="sidebar-item" data-tab="t-gaps" onclick="showTeacherTab('t-gaps',this)"><span class="icon">⚠️</span> Gap Alerts <span class="badge badge-danger" id="tg-count">0</span></div>
-                    <div class="sidebar-item" data-tab="t-feedback" onclick="showTeacherTab('t-feedback',this)"><span class="icon">💬</span> Student Feedback</div>
-                </div>
-                <div class="sidebar-section">
-                    <div class="sidebar-label">Resources</div>
-                    <div class="sidebar-item" data-tab="t-guides" onclick="showTeacherTab('t-guides',this)"><span class="icon">📖</span> Teacher Guides <span class="badge badge-info" id="a-guide-count">—</span></div>
-                    <div class="sidebar-item" data-tab="t-papers" onclick="showTeacherTab('t-papers',this)"><span class="icon">📄</span> Past Papers</div>
-                </div>
-            </aside>
-
-            <main class="main-content">
-
-                <!-- ===== MY PACING ===== -->
-                <div id="t-pacing" class="tab-content active">
-                    <div class="section-header"><div><h2>My Pacing</h2><p>Check how you're tracking against the syllabus for one of your classes</p></div></div>
-                    <div class="filter-bar">
-                        <div class="filter-group"><label class="form-label">Level</label>
-                            <select class="form-control" id="tp-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
-                        </div>
-                        <div class="filter-group"><label class="form-label">Class</label>
-                            <select class="form-control" id="tp-class"></select>
-                        </div>
-                        <div class="filter-group"><label class="form-label">Subject</label>
-                            <select class="form-control" id="tp-subject"><option value="">Select a subject...</option></select>
-                        </div>
-                    </div>
-                    <div id="tp-result"><div class="alert alert-info">Pick a subject above to check your pacing.</div></div>
-                </div>
-
-                <!-- ===== MY LESSON PLANS ===== -->
-                <div id="t-plans" class="tab-content">
-                    <div class="section-header"><div><h2>My Lesson Plans</h2><p>Submit a plan for AI compliance analysis, or review past submissions</p></div></div>
-                    <div class="card mb-3">
-                        <div class="card-header"><span class="card-title">📤 Submit a New Plan</span></div>
-                        <div class="filter-bar" style="margin-bottom:12px;">
-                            <div class="filter-group"><label class="form-label">Level</label>
-                                <select class="form-control" id="plan-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
-                            </div>
-                            <div class="filter-group"><label class="form-label">Class</label>
-                                <select class="form-control" id="plan-class"><option value="">All Classes</option></select>
-                            </div>
-                            <div class="filter-group"><label class="form-label">Subject</label>
-                                <select class="form-control" id="plan-subject"><option value="">All Subjects</option></select>
-                            </div>
-                            <div class="filter-group"><label class="form-label">Topic</label>
-                                <select class="form-control" id="plan-topic" disabled><option value="">Pick class &amp; subject first</option></select>
-                            </div>
-                        </div>
-                        <div class="form-group"><label class="form-label">Lesson Plan File</label><input class="form-control" type="file" id="plan-file" accept=".pdf,.doc,.docx"></div>
-                        <button class="btn btn-primary btn-sm" id="plan-submit-btn" onclick="submitLessonPlan()">📤 Submit for Analysis</button>
-                    </div>
-                    <div class="card"><div class="card-header"><span class="card-title">My Submissions</span></div><div id="my-plans-list"><div class="loading"><div class="spinner"></div></div></div></div>
-                </div>
-
-                <!-- ===== MY CLASS LOGS ===== -->
-                <div id="t-logs" class="tab-content">
-                    <div class="section-header"><div><h2>My Class Logs</h2><p>Log what you actually covered in each session</p></div></div>
-                    <div class="card mb-3">
-                        <div class="card-header"><span class="card-title">🗒️ Log a Session</span></div>
-                        <div class="filter-bar" style="margin-bottom:12px;">
-                            <div class="filter-group"><label class="form-label">Level</label>
-                                <select class="form-control" id="log-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
-                            </div>
-                            <div class="filter-group"><label class="form-label">Class</label>
-                                <select class="form-control" id="log-class"><option value="">All Classes</option></select>
-                            </div>
-                            <div class="filter-group"><label class="form-label">Subject</label>
-                                <select class="form-control" id="log-subject"><option value="">All Subjects</option></select>
-                            </div>
-                            <div class="filter-group"><label class="form-label">Topic</label>
-                                <select class="form-control" id="log-topic"><option value="">Pick class &amp; subject first</option></select>
-                            </div>
-                        </div>
-                        <div class="grid-3">
-                            <div class="form-group"><label class="form-label">Date</label><input class="form-control" type="date" id="log-date"></div>
-                            <div class="form-group"><label class="form-label">Students Present</label><input class="form-control" type="number" id="log-attendance" min="0"></div>
-                            <div class="form-group"><label class="form-label">Total Students</label><input class="form-control" type="number" id="log-total" min="0"></div>
-                        </div>
-                        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-control" id="log-notes" placeholder="What did you cover?"></textarea></div>
-                        <label class="text-sm" style="display:flex;align-items:center;gap:6px;margin-bottom:12px;"><input type="checkbox" id="log-on-plan" checked> This session followed the lesson plan</label>
-                        <button class="btn btn-primary btn-sm" id="log-submit-btn" onclick="submitClassLog()">✅ Save Log</button>
-                    </div>
-                    <div class="card"><div class="card-header"><span class="card-title">Recent Logs</span></div><div id="my-logs-list"><div class="loading"><div class="spinner"></div></div></div></div>
-                </div>
-
-                <!-- ===== MASTERY ===== -->
-                <div id="t-mastery" class="tab-content">
-                    <div class="section-header"><div><h2>Students' Mastery</h2><p>Concept mastery across the classes you teach</p></div></div>
-                    <div class="filter-bar">
-                        <div class="filter-group"><label class="form-label">Subject</label><select class="form-control" id="tm-subject" onchange="renderMyMastery()"><option value="">All My Subjects</option></select></div>
-                    </div>
-                    <div class="card"><div id="tm-container" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div></div>
-                </div>
-
-                <!-- ===== GAP ALERTS ===== -->
-                <div id="t-gaps" class="tab-content">
-                    <div class="section-header"><div><h2>Gap Alerts</h2><p>Unresolved concept gaps flagged for follow-up</p></div><button class="btn btn-secondary btn-sm" onclick="loadGapAlerts()">↻ Refresh</button></div>
-                    <div id="tg-container" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
-                </div>
-
-                <!-- ===== TEACHER GUIDES ===== -->
-                <div id="t-guides" class="tab-content">
-                    <div class="section-header"><div><h2>📖 Teacher Guides</h2><p>Official REB teaching guides, by Level → Class → Subject</p></div></div>
-                    <div class="filter-bar">
-                        <div class="filter-group"><label class="form-label">Level</label><select class="form-control" id="guide-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select></div>
-                        <div class="filter-group"><label class="form-label">Class</label><select class="form-control" id="guide-class"><option value="">All Classes</option></select></div>
-                        <div class="filter-group"><label class="form-label">Subject</label><select class="form-control" id="guide-subject"><option value="">All Subjects</option></select></div>
-                        <button class="btn btn-secondary btn-sm" onclick="resetGuideFilters()">⟲ Reset</button>
-                    </div>
-                    <div id="teacher-guides-container" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
-                </div>
-
-                <!-- ===== FEEDBACK ===== -->
-                <div id="t-feedback" class="tab-content">
-                    <div class="section-header"><div><h2>Student Feedback</h2><p>Difficulty index by topic</p></div></div>
-                    <div id="a-feedback-content" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
-                </div>
-
-                <!-- ===== PAST PAPERS ===== -->
-                <div id="t-papers" class="tab-content">
-                    <div class="section-header"><div><h2>Past Papers</h2><p>Upload a past exam paper — the system extracts questions automatically, you review and approve them, then students can take timed simulations</p></div></div>
-
-                    <div class="card mb-3">
-                        <div class="card-header"><span class="card-title">Upload a new paper</span></div>
-                        <div class="form-group"><label class="form-label">Title</label><input class="form-control" id="pp-title" placeholder="e.g. Mathematics S4 — NESA 2025 Paper 1"></div>
-                        <div class="filter-bar" style="padding:0;border:none;background:none;margin-bottom:12px;">
-                            <div class="filter-group" style="flex:2;"><label class="form-label">Subject</label><select class="form-control" id="pp-subject"></select></div>
-                            <div class="filter-group"><label class="form-label">Duration (mins)</label><input class="form-control" type="number" id="pp-duration" value="60" style="width:100px;"></div>
-                        </div>
-                        <div class="form-group"><label class="form-label">Paper PDF</label><input type="file" class="form-control" id="pp-file" accept="application/pdf"></div>
-                        <button class="btn btn-primary btn-sm" onclick="uploadPastPaper()">⬆️ Upload &amp; Extract Questions</button>
-                    </div>
-
-                    <div class="card mb-3">
-                        <div class="card-header"><span class="card-title">My Uploaded Papers</span></div>
-                        <div id="pp-assessments" class="panel-scroll-lg"><div class="text-muted text-sm">Upload a paper above to get started.</div></div>
-                    </div>
-
-                    <div id="pp-review-section" style="display:none;">
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="card-title">Review &amp; approve draft questions</span>
-                                <span class="text-muted text-sm"> — Set the correct answer for each MCQ before approving</span>
-                            </div>
-                            <div id="pp-review" class="panel-scroll-lg"></div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- ===== MY TOPICS ===== -->
-                <div id="t-topics" class="tab-content">
-                    <div class="section-header">
-                        <div>
-                            <h2>My Topics</h2>
-                            <p>Record teaching progress per topic — confirming a topic unlocks quiz access for your students</p>
-                        </div>
-                        <button class="btn btn-secondary btn-sm" onclick="loadMyTopics()">↻ Refresh</button>
-                    </div>
-
-                    <div class="grid-2" style="margin-bottom:16px;">
-                        <div class="card">
-                            <div class="card-header"><span class="card-title">📚 Topic Progress</span></div>
-                            <div class="filter-bar" style="padding:0;border:none;background:none;margin-bottom:10px;">
-                                <div class="filter-group" style="flex:1;">
-                                    <label class="form-label">Subject</label>
-                                    <select class="form-control" id="tt-subject-filter">
-                                        <option value="">All My Subjects</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div id="tt-list" class="panel-scroll-lg">
-                                <div class="loading"><div class="spinner"></div></div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header"><span class="card-title">🎯 Student Quiz Activity</span></div>
-                            <div id="tt-quiz-activity" class="panel-scroll-lg">
-                                <div class="loading"><div class="spinner"></div></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="doLogout()">
+            Sign Out
+          </button>
         </div>
+      </nav>
+
+      <div class="app-layout">
+        <aside class="sidebar" id="teacher-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-label">My Work</div>
+            <div
+              class="sidebar-item active"
+              data-tab="t-pacing"
+              onclick="showTeacherTab('t-pacing', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">bar_chart</span></span> My Pacing
+            </div>
+            <div
+              class="sidebar-item"
+              data-tab="t-plans"
+              onclick="showTeacherTab('t-plans', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">edit_note</span></span> My Lesson Plans
+            </div>
+            <div
+              class="sidebar-item"
+              data-tab="t-logs"
+              onclick="showTeacherTab('t-logs', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">note</span></span> My Class Logs
+            </div>
+            <div
+              class="sidebar-item"
+              data-tab="t-topics"
+              onclick="showTeacherTab('t-topics', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">check_circle</span></span> My Topics
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-label">My Students</div>
+            <div
+              class="sidebar-item"
+              data-tab="t-mastery"
+              onclick="showTeacherTab('t-mastery', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">psychology</span></span> Students' Mastery
+            </div>
+            <div
+              class="sidebar-item"
+              data-tab="t-gaps"
+              onclick="showTeacherTab('t-gaps', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">warning</span></span> Gap Alerts
+              <span class="badge badge-danger" id="tg-count">0</span>
+            </div>
+            <div
+              class="sidebar-item"
+              data-tab="t-feedback"
+              onclick="showTeacherTab('t-feedback', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">chat</span></span> Student Feedback
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-label">Resources</div>
+            <div
+              class="sidebar-item"
+              data-tab="t-guides"
+              onclick="showTeacherTab('t-guides', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span></span> Teacher Guides
+              <span class="badge badge-info" id="a-guide-count">—</span>
+            </div>
+            <div
+              class="sidebar-item"
+              data-tab="t-papers"
+              onclick="showTeacherTab('t-papers', this)"
+            >
+              <span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">description</span></span> Past Papers
+            </div>
+          </div>
+        </aside>
+
+        <main class="main-content">
+          <!-- ===== MY PACING ===== -->
+          <div id="t-pacing" class="tab-content active">
+            <div class="section-header">
+              <div>
+                <h2>My Pacing</h2>
+                <p>
+                  Check how you're tracking against the syllabus for one of your
+                  classes
+                </p>
+              </div>
+            </div>
+            <div class="filter-bar">
+              <div class="filter-group">
+                <label class="form-label">Level</label>
+                <select class="form-control" id="tp-level">
+                  <option value="">All Levels</option>
+                  <option value="O">O'Level</option>
+                  <option value="A">A'Level</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="form-label">Class</label>
+                <select class="form-control" id="tp-class"></select>
+              </div>
+              <div class="filter-group">
+                <label class="form-label">Subject</label>
+                <select class="form-control" id="tp-subject">
+                  <option value="">Select a subject...</option>
+                </select>
+              </div>
+            </div>
+            <div id="tp-result">
+              <div class="alert alert-info">
+                Pick a subject above to check your pacing.
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== MY LESSON PLANS ===== -->
+          <!-- ===== MY LESSON PLANS ===== -->
+          <div id="t-plans" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>My Lesson Plans</h2>
+                <p>
+                  Submit a plan for AI compliance analysis, or review past
+                  submissions
+                </p>
+              </div>
+            </div>
+
+            <!-- Updated form with plan-edit-id -->
+            <div class="card mb-3" id="plan-form">
+              <div class="card-header">
+                <span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">upload</span> Submit a New Plan</span>
+              </div>
+
+              <!-- Hidden field for tracking which plan is being edited -->
+              <input type="hidden" id="plan-edit-id" value="" />
+
+              <div class="filter-bar" style="margin-bottom: 12px">
+                <div class="filter-group">
+                  <label class="form-label">Level</label>
+                  <select
+                    class="form-control"
+                    id="plan-level"
+                    onchange="
+                      document
+                        .getElementById('plan-class')
+                        .dispatchEvent(new Event('change'))
+                    "
+                  >
+                    <option value="">All Levels</option>
+                    <option value="O">O'Level</option>
+                    <option value="A">A'Level</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Class</label>
+                  <select class="form-control" id="plan-class">
+                    <option value="">All Classes</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Subject</label>
+                  <select class="form-control" id="plan-subject">
+                    <option value="">All Subjects</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Topic</label>
+                  <select class="form-control" id="plan-topic" disabled>
+                    <option value="">Pick class &amp; subject first</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Lesson Plan File</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="plan-file"
+                  accept=".pdf,.doc,.docx"
+                />
+              </div>
+              <button
+                class="btn btn-primary btn-sm"
+                id="plan-submit-btn"
+                onclick="submitLessonPlan()"
+              >
+                <span class="material-symbols-outlined ui-icon" aria-hidden="true">upload</span> Submit for Analysis
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">My Submissions</span>
+              </div>
+              <div id="my-plans-list">
+                <div class="loading"><div class="spinner"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== MY CLASS LOGS ===== -->
+          <div id="t-logs" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>My Class Logs</h2>
+                <p>Log what you actually covered in each session</p>
+              </div>
+            </div>
+            <div class="card mb-3">
+              <div class="card-header">
+                <span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">note</span> Log a Session</span>
+              </div>
+              <div class="filter-bar" style="margin-bottom: 12px">
+                <div class="filter-group">
+                  <label class="form-label">Level</label>
+                  <select class="form-control" id="log-level">
+                    <option value="">All Levels</option>
+                    <option value="O">O'Level</option>
+                    <option value="A">A'Level</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Class</label>
+                  <select class="form-control" id="log-class">
+                    <option value="">All Classes</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Subject</label>
+                  <select class="form-control" id="log-subject">
+                    <option value="">All Subjects</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Topic</label>
+                  <select class="form-control" id="log-topic">
+                    <option value="">Pick class &amp; subject first</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid-3">
+                <div class="form-group">
+                  <label class="form-label">Date</label
+                  ><input class="form-control" type="date" id="log-date" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Students Present</label
+                  ><input
+                    class="form-control"
+                    type="number"
+                    id="log-attendance"
+                    min="0"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Total Students</label
+                  ><input
+                    class="form-control"
+                    type="number"
+                    id="log-total"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notes</label
+                ><textarea
+                  class="form-control"
+                  id="log-notes"
+                  placeholder="What did you cover?"
+                ></textarea>
+              </div>
+              <label
+                class="text-sm"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  margin-bottom: 12px;
+                "
+                ><input type="checkbox" id="log-on-plan" checked /> This session
+                followed the lesson plan</label
+              >
+              <button
+                class="btn btn-primary btn-sm"
+                id="log-submit-btn"
+                onclick="submitClassLog()"
+              >
+                <span class="material-symbols-outlined ui-icon" aria-hidden="true">check_circle</span> Save Log
+              </button>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Recent Logs</span>
+              </div>
+              <div id="my-logs-list">
+                <div class="loading"><div class="spinner"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== MASTERY ===== -->
+          <div id="t-mastery" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>Students' Mastery</h2>
+                <p>Concept mastery across the classes you teach</p>
+              </div>
+            </div>
+            <div class="filter-bar">
+              <div class="filter-group">
+                <label class="form-label">Subject</label
+                ><select
+                  class="form-control"
+                  id="tm-subject"
+                  onchange="renderMyMastery()"
+                >
+                  <option value="">All My Subjects</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <div id="tm-container" class="panel-scroll-lg">
+                <div class="loading"><div class="spinner"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== GAP ALERTS ===== -->
+          <div id="t-gaps" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>Gap Alerts</h2>
+                <p>Unresolved concept gaps flagged for follow-up</p>
+              </div>
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="loadGapAlerts()"
+              >
+                <span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh
+              </button>
+            </div>
+            <div id="tg-container" class="panel-scroll-lg">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+
+          <!-- ===== TEACHER GUIDES ===== -->
+          <div id="t-guides" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span> Teacher Guides</h2>
+                <p>Official REB teaching guides, by Level <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Class <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Subject</p>
+              </div>
+            </div>
+            <div class="filter-bar">
+              <div class="filter-group">
+                <label class="form-label">Level</label
+                ><select class="form-control" id="guide-level">
+                  <option value="">All Levels</option>
+                  <option value="O">O'Level</option>
+                  <option value="A">A'Level</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="form-label">Class</label
+                ><select class="form-control" id="guide-class">
+                  <option value="">All Classes</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="form-label">Subject</label
+                ><select class="form-control" id="guide-subject">
+                  <option value="">All Subjects</option>
+                </select>
+              </div>
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="resetGuideFilters()"
+              >
+                ⟲ Reset
+              </button>
+            </div>
+            <div id="teacher-guides-container" class="panel-scroll-lg">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+
+          <!-- ===== FEEDBACK ===== -->
+          <div id="t-feedback" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>Student Feedback</h2>
+                <p>Difficulty index by topic</p>
+              </div>
+            </div>
+            <div id="a-feedback-content" class="panel-scroll-lg">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+
+          <!-- ===== PAST PAPERS ===== -->
+          <div id="t-papers" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>Past Papers</h2>
+                <p>
+                  Upload a past exam paper — the system extracts questions
+                  automatically, you review and approve them, then students can
+                  take timed simulations
+                </p>
+              </div>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header">
+                <span class="card-title">Upload a new paper</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Title</label
+                ><input
+                  class="form-control"
+                  id="pp-title"
+                  placeholder="e.g. Mathematics S4 — NESA 2025 Paper 1"
+                />
+              </div>
+              <div
+                class="filter-bar"
+                style="
+                  padding: 0;
+                  border: none;
+                  background: none;
+                  margin-bottom: 12px;
+                "
+              >
+                <div class="filter-group" style="flex: 2">
+                  <label class="form-label">Subject</label
+                  ><select class="form-control" id="pp-subject"></select>
+                </div>
+                <div class="filter-group">
+                  <label class="form-label">Duration (mins)</label
+                  ><input
+                    class="form-control"
+                    type="number"
+                    id="pp-duration"
+                    value="60"
+                    style="width: 100px"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Paper PDF</label
+                ><input
+                  type="file"
+                  class="form-control"
+                  id="pp-file"
+                  accept="application/pdf"
+                />
+              </div>
+              <button
+                class="btn btn-primary btn-sm"
+                onclick="uploadPastPaper()"
+              >
+                <span class="material-symbols-outlined ui-icon" aria-hidden="true">upload</span> Upload &amp; Extract Questions
+              </button>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header">
+                <span class="card-title">My Uploaded Papers</span>
+              </div>
+              <div id="pp-assessments" class="panel-scroll-lg">
+                <div class="text-muted text-sm">
+                  Upload a paper above to get started.
+                </div>
+              </div>
+            </div>
+
+            <div id="pp-review-section" style="display: none">
+              <div class="card">
+                <div class="card-header">
+                  <span class="card-title"
+                    >Review &amp; approve draft questions</span
+                  >
+                  <span class="text-muted text-sm">
+                    — Set the correct answer for each MCQ before approving</span
+                  >
+                </div>
+                <div id="pp-review" class="panel-scroll-lg"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== MY TOPICS ===== -->
+          <div id="t-topics" class="tab-content">
+            <div class="section-header">
+              <div>
+                <h2>My Topics</h2>
+                <p>
+                  Record teaching progress per topic — confirming a topic
+                  unlocks quiz access for your students
+                </p>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="loadMyTopics()">
+                <span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh
+              </button>
+            </div>
+
+            <div class="grid-2" style="margin-bottom: 16px">
+              <div class="card">
+                <div class="card-header">
+                  <span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span> Topic Progress</span>
+                </div>
+                <div
+                  class="filter-bar"
+                  style="
+                    padding: 0;
+                    border: none;
+                    background: none;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <div class="filter-group" style="flex: 1">
+                    <label class="form-label">Subject</label>
+                    <select class="form-control" id="tt-subject-filter">
+                      <option value="">All My Subjects</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="tt-list" class="panel-scroll-lg">
+                  <div class="loading"><div class="spinner"></div></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">track_changes</span> Student Quiz Activity</span>
+                </div>
+                <div id="tt-quiz-activity" class="panel-scroll-lg">
+                  <div class="loading"><div class="spinner"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
 
+    <script src="js/icons.js"></script>
     <script src="js/config.js"></script>
     <script src="js/ui-helpers.js"></script>
     <script src="js/auth.js"></script>
@@ -242,5 +615,5 @@
     <script src="js/teacher-papers.js"></script>
     <script src="js/teacher-topics.js"></script>
     <script src="js/teacher-app.js"></script>
-</body>
+  </body>
 </html>

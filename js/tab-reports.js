@@ -38,11 +38,11 @@ async function loadAdminReport() {
             <!-- Report type tabs -->
             <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
                 ${[
-                  ["overview", "📊 Overview", true],
-                  ["teacher", "👨‍🏫 By Teacher", false],
-                  ["subject", "📚 By Subject", false],
-                  ["mastery", "🧠 Mastery", false],
-                  ["ai", "🤖 AI Analysis", false],
+                  ["overview", "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span> Overview", true],
+                  ["teacher", "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">person</span>‍<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">apartment</span> By Teacher", false],
+                  ["subject", "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span> By Subject", false],
+                  ["mastery", "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">psychology</span> Mastery", false],
+                  ["ai", "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">smart_toy</span> AI Analysis", false],
                 ]
                   .map(
                     ([id, label, active]) => `
@@ -54,7 +54,7 @@ async function loadAdminReport() {
                   )
                   .join("")}
                 <button class="btn btn-secondary btn-sm" style="margin-left:auto;"
-                        onclick="exportReportPDF()">⬇ Export PDF</button>
+                        onclick="exportReportPDF()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Export PDF</button>
             </div>
 
             <!-- Filter bar -->
@@ -96,7 +96,7 @@ async function loadAdminReport() {
         `;
     renderCurrentReport();
   } catch (e) {
-    el.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    el.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }
 
@@ -186,28 +186,28 @@ function renderOverviewReport(pace, mast) {
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
                 ${[
                   [
-                    "📊",
+                    "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">bar_chart</span>",
                     "Compliance",
                     avgComp + "%",
                     avgComp >= 72 ? "Above benchmark" : "Below 72%",
                     avgComp >= 72 ? "var(--success)" : "var(--danger)",
                   ],
                   [
-                    "📈",
+                    "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">trending_up</span>",
                     "Coverage",
                     avgCov + "%",
                     pace.length + " records",
                     "var(--accent)",
                   ],
                   [
-                    "🧠",
+                    "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">psychology</span>",
                     "Avg Mastery",
                     avgMast + "%",
                     mast.length + " records",
                     avgMast >= 60 ? "var(--success)" : "var(--warning)",
                   ],
                   [
-                    "⚠️",
+                    "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span>",
                     "Flagged Plans",
                     flagged,
                     planData.length + " total",
@@ -226,7 +226,7 @@ function renderOverviewReport(pace, mast) {
                   .join("")}
             </div>
 
-            <h4 style="color:var(--accent);margin:16px 0 8px;">📈 Curriculum Coverage by Subject</h4>
+            <h4 style="color:var(--accent);margin:16px 0 8px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">trending_up</span> Curriculum Coverage by Subject</h4>
             ${
               pace
                 .slice(0, 10)
@@ -250,7 +250,7 @@ function renderOverviewReport(pace, mast) {
               '<div class="text-muted text-sm">No pacing data available</div>'
             }
 
-            <h4 style="color:var(--accent);margin:16px 0 8px;">📚 Resources</h4>
+            <h4 style="color:var(--accent);margin:16px 0 8px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span> Resources</h4>
             <div style="font-size:13px;color:var(--gray-700);">
                 <p>${topicCount} curriculum topics indexed · ${teachers.length} active teachers · ${feedData.length} student feedback records · ${sessionData.filter?.((s) => s.status === "graded").length || 0} graded quiz sessions</p>
             </div>
@@ -275,7 +275,7 @@ function renderTeacherReport(pace) {
       return `
             <div class="card mb-3">
                 <div class="card-header">
-                    <span class="card-title">👨‍🏫 ${teacher}</span>
+                    <span class="card-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">person</span>‍<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">apartment</span> ${teacher}</span>
                     <span class="badge ${avg >= 72 ? "badge-success" : "badge-warning"}">${avg}% avg coverage</span>
                 </div>
                 ${records
@@ -330,7 +330,7 @@ function renderSubjectReport(pace, mast) {
       return `
             <div class="card mb-3">
                 <div class="card-header">
-                    <span class="card-title">📚 ${subject}</span>
+                    <span class="card-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span> ${subject}</span>
                     <div style="display:flex;gap:8px;">
                         ${avgCov != null ? `<span class="badge ${avgCov >= 72 ? "badge-success" : "badge-warning"}">Coverage: ${avgCov}%</span>` : ""}
                         ${avgMast != null ? `<span class="badge ${avgMast >= 65 ? "badge-success" : "badge-warning"}">Mastery: ${avgMast}%</span>` : ""}
@@ -371,7 +371,7 @@ function renderMasteryReport(mast) {
     .sort((a, b) => a.avg - b.avg);
   return `
         <div class="card">
-            <div class="card-header"><span class="card-title">🧠 Topic Mastery Overview</span></div>
+            <div class="card-header"><span class="card-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">psychology</span> Topic Mastery Overview</span></div>
             ${sorted
               .map((t) => {
                 const c =
@@ -414,13 +414,13 @@ function renderAIReport(pace, mast) {
   const recommendations = [];
   if (avgCov < 72)
     recommendations.push({
-      icon: "⚠️",
+      icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span>",
       type: "warning",
       msg: `Average syllabus coverage (${avgCov}%) is below the CBC benchmark of 72%. Prioritise lesson delivery in at-risk classes.`,
     });
   if (behind.length > 0)
     recommendations.push({
-      icon: "🔴",
+      icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">fiber_manual_record</span>",
       type: "danger",
       msg: `${behind.length} teacher-subject record${behind.length > 1 ? "s are" : " is"} behind or critical: ${behind
         .slice(0, 3)
@@ -429,32 +429,32 @@ function renderAIReport(pace, mast) {
     });
   if (lowMast.length > 0)
     recommendations.push({
-      icon: "🧠",
+      icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">psychology</span>",
       type: "warning",
       msg: `${lowMast.length} topic${lowMast.length > 1 ? "s have" : "has"} mastery below 50%. Target these for revision sessions and encourage students to use the Practice Quiz feature.`,
     });
   if (avgMast >= 70)
     recommendations.push({
-      icon: "✅",
+      icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span>",
       type: "success",
       msg: `Student mastery average of ${avgMast}% indicates good understanding overall. Continue current teaching strategies.`,
     });
   if (avgCov >= 72 && behind.length === 0)
     recommendations.push({
-      icon: "✅",
+      icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span>",
       type: "success",
       msg: "All tracked teachers are on track with curriculum coverage. CBC delivery is meeting national expectations.",
     });
   if (recommendations.length === 0)
     recommendations.push({
-      icon: "ℹ️",
+      icon: "ℹ",
       type: "info",
       msg: "Add more lesson plan submissions and quiz activity to generate meaningful AI recommendations.",
     });
 
   return `
         <div class="card mb-3">
-            <div class="card-header"><span class="card-title">🤖 AI Analysis & Recommendations</span>
+            <div class="card-header"><span class="card-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">smart_toy</span> AI Analysis & Recommendations</span>
                 <span class="badge badge-info">Based on live data</span>
             </div>
             <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">
@@ -471,7 +471,7 @@ function renderAIReport(pace, mast) {
               .join("")}
         </div>
         <div class="card">
-            <div class="card-header"><span class="card-title">📋 Data Summary</span></div>
+            <div class="card-header"><span class="card-title"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">assignment</span> Data Summary</span></div>
             <div style="font-size:13px;line-height:2;color:var(--gray-700);">
                 <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--gray-100);padding:4px 0;"><span>Average Coverage</span><strong style="color:${avgCov >= 72 ? "var(--success)" : "var(--danger)"};">${avgCov}%</strong></div>
                 <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--gray-100);padding:4px 0;"><span>Teachers Behind/Critical</span><strong style="color:${behind.length > 0 ? "var(--danger)" : "var(--success)"};">${behind.length}</strong></div>

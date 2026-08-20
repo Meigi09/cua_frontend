@@ -11,7 +11,7 @@ async function loadAdminData() {
   }
 
   try {
-    const [pacing, plans, subjects, cals, users, sessions, feedback] =
+    const [pacing, plans, subjects, cals, users, sessions, feedback, masteryRecs, gapAlerts] =
       await Promise.all([
         GET("/api/compliance/pacing/").catch(() => ({})),
         GET("/api/compliance/lesson-plans/").catch(() => ({})),
@@ -20,6 +20,8 @@ async function loadAdminData() {
         GET("/api/accounts/users/", { role: "teacher" }).catch(() => ({})),
         GET("/api/assessment/sessions/").catch(() => ({})),
         GET("/api/feedback/aggregations/").catch(() => ({})),
+        GET("/api/mastery/records/").catch(() => ({})),
+        GET("/api/mastery/alerts/").catch(() => ({})),
       ]);
 
     const paceData = pacing.results || pacing || [];
@@ -29,6 +31,8 @@ async function loadAdminData() {
     const teacherData = users.results || users || [];
     const sessionData = sessions.results || sessions || [];
     const feedbackData = feedback.results || feedback || [];
+    const masteryData = masteryRecs.results || masteryRecs || [];
+    const gapData = gapAlerts.results || gapAlerts || [];
 
     const flagged = paceData.filter((p) =>
       ["behind", "critical"].includes(p.pacing_status),
@@ -39,48 +43,109 @@ async function loadAdminData() {
             paceData.length,
         )
       : 0;
+    // Real compliance score -- semantic alignment between each lesson plan
+    // and the curriculum, computed by apps/compliance/services.py's ML
+    // scorer. Different signal from pacing coverage above: coverage asks
+    // "how much ground has been covered", compliance asks "does what was
+    // taught actually match what the curriculum requires".
+    const scoredPlans = planData.filter((p) => p.compliance_score != null);
+    const avgCompliance = scoredPlans.length
+      ? Math.round(
+          scoredPlans.reduce((s, p) => s + parseFloat(p.compliance_score || 0), 0) /
+            scoredPlans.length,
+        )
+      : null;
+    const avgMastery = masteryData.length
+      ? Math.round(
+          masteryData.reduce((s, m) => s + parseFloat(m.mastery_score || 0), 0) /
+            masteryData.length,
+        )
+      : null;
+    const criticalGaps = gapData.filter((g) => parseFloat(g.mastery || 0) < 50);
 
-    // ── STAT CARDS (number first, label below, clickable) ──────────────
+    // -- STAT CARDS (number + explainer, so the metric explains itself) --
     document.getElementById("a-stats").innerHTML = `
             <div class="stat-card" onclick="showAdminTab('a-compliance',this)" title="View compliance details">
-                <div class="stat-icon">📊</div>
-                <div class="stat-value">${avgCov}%</div>
+                <div class="stat-icon"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">fact_check</span></div>
+                <div class="stat-value">${avgCompliance != null ? avgCompliance + "%" : "\u2014"}</div>
                 <div class="stat-label">Compliance</div>
-                <div class="stat-change ${avgCov >= 72 ? "up" : "down"}">${avgCov >= 72 ? "↑ Above benchmark" : "↓ Below 72% benchmark"}</div>
+                <div class="stat-explainer">${avgCompliance != null ? "How closely submitted lesson plans match curriculum requirements." : "No scored lesson plans yet."}</div>
             </div>
-            <div class="stat-card" onclick="showAdminTab('a-users',this)" title="Manage users">
-                <div class="stat-icon">👨‍🏫</div>
-                <div class="stat-value">${teacherData.length || paceData.length || 0}</div>
-                <div class="stat-label">Teachers</div>
-                <div class="stat-change neutral">Active</div>
+            <div class="stat-card" onclick="showAdminTab('a-compliance',this)" title="View pacing details">
+                <div class="stat-icon"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">speed</span></div>
+                <div class="stat-value">${avgCov}%</div>
+                <div class="stat-label">Curriculum Coverage</div>
+                <div class="stat-explainer">${avgCov >= 72 ? "On pace with the term calendar." : "Behind the expected pace for this term."}</div>
             </div>
-            <div class="stat-card" onclick="showAdminTab('a-compliance',this)" title="View lesson plans">
-                <div class="stat-icon">📝</div>
-                <div class="stat-value">${planData.length || 0}</div>
-                <div class="stat-label">Lesson Plans</div>
-                <div class="stat-change neutral">Submitted</div>
+            <div class="stat-card" onclick="showAdminTab('a-mastery',this)" title="View concept mastery">
+                <div class="stat-icon"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">psychology</span></div>
+                <div class="stat-value">${avgMastery != null ? avgMastery + "%" : "\u2014"}</div>
+                <div class="stat-label">Concept Mastery</div>
+                <div class="stat-explainer">Average student mastery across all assessed learning outcomes.</div>
             </div>
-            <div class="stat-card" onclick="showAdminTab('a-compliance',this)" title="View risk flags">
-                <div class="stat-icon">⚠️</div>
-                <div class="stat-value">${flagged}</div>
-                <div class="stat-label">Risk Flags</div>
-                <div class="stat-change ${flagged > 0 ? "down" : "up"}">${flagged > 0 ? "Needs attention" : "All clear"}</div>
+            <div class="stat-card" onclick="showAdminTab('a-mastery',this)" title="View learning gaps">
+                <div class="stat-icon"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span></div>
+                <div class="stat-value">${gapData.length}</div>
+                <div class="stat-label">Learning Gaps</div>
+                <div class="stat-explainer">${gapData.length ? "Concepts flagged for intervention \u2014 " + criticalGaps.length + " critical." : "No unresolved concept gaps."}</div>
             </div>
         `;
     if (document.getElementById("a-flag-count"))
       document.getElementById("a-flag-count").textContent = flagged;
 
+    // -- INSIGHT BANNER -- turn the numbers above into one sentence --
+    const insightEl = document.getElementById("a-insight-text");
+    if (insightEl) {
+      const worstPace = paceData
+        .filter((p) => p.pacing_status === "critical" || p.pacing_status === "behind")
+        .sort((a, b) => parseFloat(a.coverage_pct || 0) - parseFloat(b.coverage_pct || 0))[0];
+      const worstGap = [...gapData].sort(
+        (a, b) => parseFloat(a.mastery || 0) - parseFloat(b.mastery || 0),
+      )[0];
+
+      const parts = [];
+      if (flagged > 0) {
+        parts.push(
+          `${flagged} class${flagged === 1 ? " is" : "es are"} falling behind the curriculum pace` +
+          (worstPace ? ` \u2014 ${worstPace.subject_name || "a subject"} (${worstPace.class_level || ""}) is furthest behind` : ""),
+        );
+      }
+      if (gapData.length > 0) {
+        parts.push(
+          `${gapData.length} concept${gapData.length === 1 ? "" : "s"} show${gapData.length === 1 ? "s" : ""} weak mastery` +
+          (worstGap ? `, worst on "${worstGap.topic_name || "a topic"}" at ${Math.round(parseFloat(worstGap.mastery || 0))}%` : ""),
+        );
+      }
+      insightEl.textContent = parts.length
+        ? parts.join(". ") + ". Start there."
+        : "Curriculum delivery is on pace and no critical concept gaps are open \u2014 nothing needs intervention right now.";
+    }
+
     // ── CBC COVERAGE BARS ──────────────────────────────────────────────
+    // paceData has one row per (teacher, class, subject) combo, so the
+    // same subject name repeats across different classes/levels. Label
+    // each bar with its class too, and show the worst-covered combos
+    // first (that's the actionable view) rather than an arbitrary slice.
     const barData = paceData.length
-      ? paceData.slice(0, 6).map((p) => ({
-          name: p.subject_name || p.subject || "—",
-          covered: parseFloat(p.coverage_pct || 0),
-          expected: 82,
-        }))
+      ? [...paceData]
+          .sort((a, b) => parseFloat(a.coverage_pct || 0) - parseFloat(b.coverage_pct || 0))
+          .slice(0, 6)
+          .map((p) => ({
+            name: `${p.subject_name || p.subject || "—"} · ${p.class_level || "—"}`,
+            covered: parseFloat(p.coverage_pct || 0),
+            expected: 82,
+          }))
       : subjData
           .slice(0, 6)
           .map((s) => ({ name: s.name, covered: 0, expected: 82 }));
     renderBars("a-subject-bars", barData);
+    const barNote = document.getElementById("a-subject-bars-note");
+    if (barNote) {
+      barNote.textContent =
+        paceData.length > 6
+          ? `Showing the ${Math.min(6, paceData.length)} lowest-coverage class/subject combinations out of ${paceData.length} total.`
+          : "";
+    }
 
     // ── RISK FLAGS ─────────────────────────────────────────────────────
     const riskItems = paceData.filter((p) =>
@@ -101,7 +166,7 @@ async function loadAdminData() {
                     </div>`,
             )
             .join("")
-        : '<div class="text-muted text-sm">✅ No critical issues detected</div>';
+        : '<div class="text-muted text-sm"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> No critical issues detected</div>';
     }
 
     // ── ACADEMIC CALENDAR ──────────────────────────────────────────────
@@ -187,7 +252,7 @@ async function loadAdminData() {
     }
   } catch (e) {
     if (statusEl) {
-      statusEl.textContent = "⚠️ Error";
+      statusEl.innerHTML = "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> Error";
       statusEl.style.color = "var(--danger)";
     }
     console.error("Dashboard error:", e);
@@ -240,7 +305,7 @@ async function loadGuideStats() {
   } catch (e) {
     const status = document.getElementById("guide-sync-status");
     if (status) {
-      status.textContent = "⚠️ Error";
+      status.innerHTML = "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> Error";
       status.style.color = "var(--danger)";
     }
   }

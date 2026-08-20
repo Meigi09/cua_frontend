@@ -24,7 +24,7 @@
   background: #4c2d7a;
 }
 .portal-tag {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -38,7 +38,7 @@
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 17px;
   color: white;
   cursor: pointer;
   text-decoration: none;
@@ -69,15 +69,15 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   color: white;
 }
 .topbar-user .name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
 }
 .topbar-user .role {
-  font-size: 11px;
+  font-size: 12px;
   opacity: 0.7;
 }
 
@@ -97,7 +97,7 @@
   margin-bottom: 8px;
 }
 .sidebar-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -111,7 +111,7 @@
   padding: 8px 16px;
   cursor: pointer;
   color: var(--gray-600);
-  font-size: 13px;
+  font-size: 14px;
   border-left: 3px solid transparent;
   transition: var(--transition);
 }
@@ -125,13 +125,13 @@
   border-left-color: var(--accent);
 }
 .sidebar-item .icon {
-  font-size: 16px;
+  font-size: 17px;
   width: 20px;
   text-align: center;
 }
 .sidebar-item .badge {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 12px;
   padding: 0 7px;
 }
 
@@ -198,7 +198,7 @@
     display: none;
   }
   .topbar-brand {
-    font-size: 14px;
+    font-size: 15px;
   }
   .topbar-user .name {
     display: none;
@@ -222,38 +222,116 @@
   color: var(--gray-800);
 }
 .guide-card .guide-subject {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--gray-500);
 }
 .guide-card .guide-lang {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 /* ===== HEATMAP ===== */
+.heatmap-explainer {
+  font-size: var(--text-helper);
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin-bottom: 14px;
+  max-width: 68ch;
+}
+.heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+}
+.heatmap-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--gray-700);
+}
+.heatmap-legend-swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
 .heatmap-grid {
   display: grid;
   gap: 4px;
+  position: relative;
 }
 .heatmap-cell {
   aspect-ratio: 1;
   border-radius: 4px;
   transition: var(--transition);
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
-.heatmap-cell:hover {
-  transform: scale(1.1);
+.heatmap-cell:hover,
+.heatmap-cell:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
   z-index: 2;
 }
-.heatmap-cell.high {
-  background: var(--success);
+/* 5-tier mastery scale */
+.heatmap-cell.excellent {
+  background: #166534; /* dark green */
 }
-.heatmap-cell.medium {
-  background: var(--warning);
+.heatmap-cell.good {
+  background: var(--success); /* light/medium green */
 }
-.heatmap-cell.low {
-  background: var(--danger);
+.heatmap-cell.needs-attention {
+  background: var(--warning); /* yellow */
+}
+.heatmap-cell.high-risk {
+  background: #ea580c; /* orange */
+}
+.heatmap-cell.critical {
+  background: var(--danger); /* red */
 }
 .heatmap-cell.none {
   background: var(--gray-200);
+}
+
+/* Custom hover panel (replaces bare title="" tooltips) */
+.heatmap-tooltip {
+  position: fixed;
+  z-index: 3000;
+  background: var(--gray-900);
+  color: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 260px;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  display: none;
+}
+.heatmap-tooltip.visible {
+  display: block;
+}
+.heatmap-tooltip .ht-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.heatmap-tooltip .ht-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.heatmap-tooltip .ht-reco {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a7f3d0;
 }
 
 /* ===== MISC ===== */
@@ -286,13 +364,13 @@
   min-width: 50px;
 }
 .countdown-item .value {
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 700;
   color: var(--gray-800);
   line-height: 1;
 }
 .countdown-item .label {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--gray-500);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -316,7 +394,7 @@
 }
 .filter-bar .form-label {
   margin-bottom: 4px;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
 }
 .filter-bar .filter-group {
@@ -347,7 +425,7 @@
   background: white;
   border: 1px solid var(--gray-200);
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--gray-600);
   margin: 2px 4px;
 }

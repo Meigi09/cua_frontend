@@ -51,10 +51,10 @@ async function doLogin() {
         persistSession();
         goToDashboard();
     } catch (e) {
-        errEl.textContent = '⚠️ ' + e.message;
+        errEl.innerHTML = '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ' + e.message;
         errEl.classList.add('show');
         if (e.message.includes('Cannot reach') || e.message.includes('server')) {
-            toastOrAlert('⚠️ Backend offline — continuing in demo mode', 'warning');
+            toastOrAlert('<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> Backend offline — continuing in demo mode', 'warning');
             STATE.user = { first_name: selectedRole, role: selectedRole, email };
             STATE.role = selectedRole;
             persistSession();

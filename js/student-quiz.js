@@ -238,7 +238,7 @@ async function generateQuiz() {
         renderQuestion();
         
     } catch (e) {
-        area.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        area.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
 
@@ -259,8 +259,8 @@ function renderQuestion() {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
             <span class="text-muted text-sm">Question ${i + 1} of ${qs.length}</span>
             <div style="display:flex;gap:8px;">
-                <span class="quiz-xp">⭐ ${quizState.xp} XP</span>
-                ${quizState.streak >= 2 ? `<span class="quiz-streak">🔥 ${quizState.streak} streak</span>` : ""}
+                <span class="quiz-xp"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">star</span> ${quizState.xp} XP</span>
+                ${quizState.streak >= 2 ? `<span class="quiz-streak"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">local_fire_department</span> ${quizState.streak} streak</span>` : ""}
             </div>
         </div>
         <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
@@ -285,7 +285,7 @@ function renderQuestion() {
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <span class="text-muted text-sm">${q.marks} mark${q.marks !== 1 ? "s" : ""}</span>
             <button id="quiz-next-btn" class="btn btn-primary" style="display:none;" onclick="nextQuestion()">
-                ${i + 1 < qs.length ? "Next →" : "Finish Quiz"}
+                ${i + 1 < qs.length ? "Next <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_forward</span>" : "Finish Quiz"}
             </button>
         </div>
     `;
@@ -323,9 +323,9 @@ function selectOption(btn, questionId, idx) {
   const feedbackEl = document.getElementById("quiz-feedback");
   feedbackEl.style.display = "block";
   if (isCorrect) {
-    feedbackEl.innerHTML = `<div class="alert alert-success pop-in">✅ Correct! ${quizState.streak >= 2 ? `🔥 ${quizState.streak}x streak!` : ""} +${quizState.streak >= 3 ? 15 : 10} XP</div>`;
+    feedbackEl.innerHTML = `<div class="alert alert-success pop-in"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">check_circle</span> Correct! ${quizState.streak >= 2 ? `<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">local_fire_department</span> ${quizState.streak}x streak!` : ""} +${quizState.streak >= 3 ? 15 : 10} XP</div>`;
   } else {
-    feedbackEl.innerHTML = `<div class="alert alert-warning pop-in">❌ Not quite — the correct answer is highlighted above.${q.explanation ? `<br><small>${q.explanation}</small>` : ""}</div>`;
+    feedbackEl.innerHTML = `<div class="alert alert-warning pop-in"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">cancel</span> Not quite — the correct answer is highlighted above.${q.explanation ? `<br><small>${q.explanation}</small>` : ""}</div>`;
   }
   document.getElementById("quiz-next-btn").style.display = "inline-block";
 }
@@ -370,7 +370,7 @@ async function submitQuiz() {
     renderQuizResult(result);
     currentQuiz = null;
   } catch (e) {
-    area.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    area.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
   }
 }
 
@@ -379,14 +379,14 @@ function renderQuizResult(result) {
   const pct = result.percentage || 0;
   const rank =
     pct >= 90
-      ? { label: "S Rank", icon: "🏆", color: "#d97706" }
+      ? { label: "S Rank", icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">emoji_events</span>", color: "#d97706" }
       : pct >= 75
-        ? { label: "A Rank", icon: "🥇", color: "#4f46e5" }
+        ? { label: "A Rank", icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">workspace_premium</span>", color: "#4f46e5" }
         : pct >= 60
-          ? { label: "B Rank", icon: "🥈", color: "#059669" }
+          ? { label: "B Rank", icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">workspace_premium</span>", color: "#059669" }
           : pct >= 40
-            ? { label: "C Rank", icon: "🥉", color: "#718096" }
-            : { label: "Try Again", icon: "💪", color: "#dc2626" };
+            ? { label: "C Rank", icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">workspace_premium</span>", color: "#718096" }
+            : { label: "Try Again", icon: "<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">fitness_center</span>", color: "#dc2626" };
 
   area.innerHTML = `
         <div class="card text-center pop-in" style="padding:32px 24px;">
@@ -395,8 +395,8 @@ function renderQuizResult(result) {
             <div style="font-size:48px;font-weight:800;color:${rank.color};line-height:1;">${pct}%</div>
             <div class="text-muted" style="margin:6px 0 16px;">${result.total_score} / ${result.max_score} marks</div>
             <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;">
-                <span class="quiz-xp">⭐ ${quizState.xp} XP earned</span>
-                ${quizState.streak >= 3 ? `<span class="quiz-streak">🔥 Best streak: ${quizState.streak}</span>` : ""}
+                <span class="quiz-xp"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">star</span> ${quizState.xp} XP earned</span>
+                ${quizState.streak >= 3 ? `<span class="quiz-streak"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">local_fire_department</span> Best streak: ${quizState.streak}</span>` : ""}
             </div>
             <div class="alert ${result.passed ? "alert-success" : "alert-warning"}">
                 ${result.passed ? "Great work — your mastery records have been updated!" : "Keep practising — review the topics below."}
@@ -425,7 +425,7 @@ function renderQuizResult(result) {
         }
 
         <button class="btn btn-secondary btn-block mt-3" onclick="document.getElementById('quiz-area').innerHTML='';currentQuiz=null;">
-            ← Try Another Quiz
+            <span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">arrow_back</span> Try Another Quiz
         </button>
     `;
 }

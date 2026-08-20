@@ -48,7 +48,7 @@ async function submitFeedback() {
     } catch (e) {
         toast('Could not submit: ' + e.message, 'error');
     } finally {
-        btn.disabled = false; btn.textContent = '📨 Submit Feedback';
+        btn.disabled = false; btn.innerHTML = '<span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">mail</span> Submit Feedback';
     }
 }
 
@@ -66,6 +66,6 @@ async function loadMyFeedbackHistory() {
             </div>
         `).join('') : '<div class="text-muted text-sm">You haven\'t given any feedback yet.</div>';
     } catch (e) {
-        container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }

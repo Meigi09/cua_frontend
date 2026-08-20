@@ -33,25 +33,25 @@
             <aside class="sidebar" id="admin-sidebar">
                 <div class="sidebar-section">
                     <div class="sidebar-label">Overview</div>
-                    <div class="sidebar-item active" data-tab="a-dashboard" onclick="showAdminTab('a-dashboard',this)"><span class="icon">📊</span> Dashboard</div>
-                    <div class="sidebar-item" data-tab="a-compliance" onclick="showAdminTab('a-compliance',this)"><span class="icon">✅</span> Compliance <span class="badge badge-danger" id="a-flag-count">0</span></div>
-                    <div class="sidebar-item" data-tab="a-mastery" onclick="showAdminTab('a-mastery',this)"><span class="icon">🧠</span> Mastery</div>
+                    <div class="sidebar-item active" data-tab="a-dashboard" onclick="showAdminTab('a-dashboard',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">dashboard</span></span> Dashboard</div>
+                    <div class="sidebar-item" data-tab="a-compliance" onclick="showAdminTab('a-compliance',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">check_circle</span></span> Compliance <span class="badge badge-danger" id="a-flag-count">0</span></div>
+                    <div class="sidebar-item" data-tab="a-mastery" onclick="showAdminTab('a-mastery',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">psychology</span></span> Mastery</div>
                 </div>
                 <div class="sidebar-section">
                     <div class="sidebar-label">Management</div>
-                    <div class="sidebar-item" data-tab="a-curriculum" onclick="showAdminTab('a-curriculum',this)"><span class="icon">📚</span> Curriculum</div>
-                    <div class="sidebar-item" data-tab="a-guides" onclick="showAdminTab('a-guides',this)"><span class="icon">📖</span> Teacher Guides <span class="badge badge-info" id="a-guide-count">99</span></div>
-                    <div class="sidebar-item" data-tab="a-reports" onclick="showAdminTab('a-reports',this)"><span class="icon">📋</span> Reports</div>
-                    <div class="sidebar-item" data-tab="a-nesa" onclick="showAdminTab('a-nesa',this)"><span class="icon">🎯</span> NESA Readiness</div>
-                    <div class="sidebar-item" data-tab="a-feedback" onclick="showAdminTab('a-feedback',this)"><span class="icon">💬</span> Feedback</div>
+                    <div class="sidebar-item" data-tab="a-curriculum" onclick="showAdminTab('a-curriculum',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span></span> Curriculum</div>
+                    <div class="sidebar-item" data-tab="a-guides" onclick="showAdminTab('a-guides',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span></span> Teacher Guides <span class="badge badge-info" id="a-guide-count">99</span></div>
+                    <div class="sidebar-item" data-tab="a-reports" onclick="showAdminTab('a-reports',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">assignment</span></span> Reports</div>
+                    <div class="sidebar-item" data-tab="a-nesa" onclick="showAdminTab('a-nesa',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">track_changes</span></span> NESA Readiness</div>
+                    <div class="sidebar-item" data-tab="a-feedback" onclick="showAdminTab('a-feedback',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">chat</span></span> Feedback</div>
                 </div>
                 <div class="sidebar-section">
                     <div class="sidebar-label">Administration</div>
-                    <div class="sidebar-item" id="users-nav-item" data-tab="a-users" onclick="showAdminTab('a-users',this)"><span class="icon">👥</span> Manage Users</div>
+                    <div class="sidebar-item" id="users-nav-item" data-tab="a-users" onclick="showAdminTab('a-users',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">group</span></span> Manage Users</div>
                 </div>
                 <div class="sidebar-section">
                     <div class="sidebar-label">System</div>
-                    <div class="sidebar-item" data-tab="a-settings" onclick="showAdminTab('a-settings',this)"><span class="icon">⚙️</span> Settings</div>
+                    <div class="sidebar-item" data-tab="a-settings" onclick="showAdminTab('a-settings',this)"><span class="icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">settings</span></span> Settings</div>
                 </div>
             </aside>
 
@@ -60,24 +60,37 @@
                 <!-- ===== DASHBOARD ===== -->
                 <div id="a-dashboard" class="tab-content active">
                     <div class="section-header">
-                        <div><h2>Dashboard</h2><p><span class="live-dot"></span>Real-time compliance monitoring</p></div>
+                        <div><h2>Dashboard</h2><p><span class="live-dot"></span>Real-time compliance, pacing &amp; concept-mastery monitoring</p></div>
                         <div class="section-actions">
                             <span id="a-api-status" style="font-size:12px;color:var(--gray-500);">● Connecting...</span>
-                            <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">↻ Refresh</button>
-                            <button class="btn btn-primary btn-sm" onclick="triggerRebSync()">⟳ Sync REB</button>
+                            <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh</button>
+                            <button class="btn btn-primary btn-sm" onclick="triggerRebSync()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">sync</span> Sync REB</button>
+                        </div>
+                    </div>
+
+                    <!-- Insight banner: the one sentence a judge/admin should read first.
+                         Synthesized from the same real data behind the stat cards below —
+                         no separate AI call, just the numbers turned into a sentence. -->
+                    <div class="card mb-3" id="a-insight-banner" style="border-left:4px solid var(--primary);">
+                        <div style="display:flex;gap:12px;align-items:flex-start;">
+                            <span class="material-symbols-outlined ui-icon" aria-hidden="true" style="font-size:24px;color:var(--primary);margin-top:2px;">psychology</span>
+                            <div>
+                                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray-500);margin-bottom:4px;">Today's Insight</div>
+                                <div id="a-insight-text" style="font-size:var(--text-body);color:var(--gray-800);line-height:1.5;">Analyzing curriculum delivery and concept mastery…</div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="stats-grid" id="a-stats">
-                        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">Compliance</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
-                        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-label">Teachers</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
-                        <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Lesson Plans</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
-                        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">Risk Flags</div><div class="stat-value">—</div><div class="stat-change neutral">Loading...</div></div>
+                        <div class="stat-card"><div class="stat-icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">fact_check</span></div><div class="stat-value">—</div><div class="stat-label">Compliance</div><div class="stat-explainer">Loading…</div></div>
+                        <div class="stat-card"><div class="stat-icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">speed</span></div><div class="stat-value">—</div><div class="stat-label">Curriculum Coverage</div><div class="stat-explainer">Loading…</div></div>
+                        <div class="stat-card"><div class="stat-icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">psychology</span></div><div class="stat-value">—</div><div class="stat-label">Concept Mastery</div><div class="stat-explainer">Loading…</div></div>
+                        <div class="stat-card"><div class="stat-icon"><span class="material-symbols-outlined ui-icon" aria-hidden="true">warning</span></div><div class="stat-value">—</div><div class="stat-label">Learning Gaps</div><div class="stat-explainer">Loading…</div></div>
                     </div>
 
                     <div class="card mb-3" id="guide-stats-card">
                         <div class="card-header">
-                            <div><span class="card-title">📖 Teacher Guides</span><span class="card-subtitle" style="margin-left:12px;font-size:12px;" id="guide-sync-status">● loading...</span></div>
+                            <div><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span> Teacher Guides</span><span class="card-subtitle" style="margin-left:12px;font-size:12px;" id="guide-sync-status">● loading...</span></div>
                             <span class="badge badge-info" id="guide-total-display">—</span>
                         </div>
                         <div style="display:flex;gap:24px;flex-wrap:wrap;">
@@ -94,33 +107,34 @@
 
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header"><span class="card-title">CBC Coverage by Subject</span><span class="badge badge-info" id="a-term-badge">Term 3</span></div>
+                            <div class="card-header"><span class="card-title">CBC Coverage by Subject &amp; Class</span><span class="badge badge-info" id="a-term-badge">Term 3</span></div>
                             <div id="a-subject-bars" class="panel-scroll"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+                            <div id="a-subject-bars-note" class="helper-text" style="margin-top:8px;"></div>
                         </div>
                         <div class="card">
-                            <div class="card-header"><span class="card-title">⚠️ Risk Flags</span><span class="badge badge-danger" id="a-risk-count">0</span></div>
+                            <div class="card-header"><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">warning</span> Risk Flags</span><span class="badge badge-danger" id="a-risk-count">0</span></div>
                             <div id="a-risk-list" class="panel-scroll"><div class="loading"><div class="spinner"></div>Loading...</div></div>
                         </div>
                     </div>
 
                     <div class="grid-3 mt-3">
-                        <div class="card"><div class="card-header"><span class="card-title">📅 Term Progress</span></div><div id="a-term-progress"><div class="loading"><div class="spinner"></div></div></div></div>
-                        <div class="card"><div class="card-header"><span class="card-title">📝 Lesson Plan Stats</span></div><div id="a-plan-stats"><div class="loading"><div class="spinner"></div></div></div></div>
-                        <div class="card"><div class="card-header"><span class="card-title">🧑‍🎓 Student Activity</span></div><div id="a-student-activity"><div class="loading"><div class="spinner"></div></div></div></div>
+                        <div class="card"><div class="card-header"><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">calendar_month</span> Term Progress</span></div><div id="a-term-progress"><div class="loading"><div class="spinner"></div></div></div></div>
+                        <div class="card"><div class="card-header"><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">edit_note</span> Lesson Plan Stats</span></div><div id="a-plan-stats"><div class="loading"><div class="spinner"></div></div></div></div>
+                        <div class="card"><div class="card-header"><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">person</span>‍<span class="material-symbols-outlined ui-icon" aria-hidden="true">school</span> Student Activity</span></div><div id="a-student-activity"><div class="loading"><div class="spinner"></div></div></div></div>
                     </div>
                 </div>
 
                 <!-- ===== COMPLIANCE ===== -->
                 <div id="a-compliance" class="tab-content">
                     <div class="section-header">
-                        <div><h2>Compliance Monitor</h2><p>Teacher pacing vs MINEDUC calendar, by Level → Class → Subject</p></div>
+                        <div><h2>Compliance Monitor</h2><p>Teacher pacing vs MINEDUC calendar, by Level <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Class <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Subject</p></div>
                         <div class="section-actions">
                             <button class="btn btn-secondary btn-sm" onclick="resetComplianceFilters()">⟲ Reset Filters</button>
-                            <button class="btn btn-secondary btn-sm" onclick="loadComplianceData()">↻ Refresh</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadComplianceData()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh</button>
                         </div>
                     </div>
                     <div class="card">
-                        <div class="alert alert-info mb-3"><span>📡</span><span id="a-reb-sync-note">Filters apply directly to the synced REB curriculum hierarchy.</span></div>
+                        <div class="alert alert-info mb-3"><span><span class="material-symbols-outlined ui-icon" aria-hidden="true">cell_tower</span></span><span id="a-reb-sync-note">Filters apply directly to the synced REB curriculum hierarchy.</span></div>
                         <div class="filter-bar">
                             <div class="filter-group"><label class="form-label">Level</label>
                                 <select class="form-control" id="compliance-level"><option value="">All Levels</option><option value="O">O'Level</option><option value="A">A'Level</option></select>
@@ -156,10 +170,10 @@
                 <!-- ===== MASTERY ===== -->
                 <div id="a-mastery" class="tab-content">
                     <div class="section-header">
-                        <div><h2>Concept Mastery Heatmap</h2><p>Class-level CBC performance, by Level → Class → Subject</p></div>
+                        <div><h2>Concept Mastery Heatmap</h2><p>Class-level CBC performance, by Level <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Class <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Subject</p></div>
                         <div class="section-actions">
                             <button class="btn btn-secondary btn-sm" onclick="resetMasteryFilters()">⟲ Reset Filters</button>
-                            <button class="btn btn-secondary btn-sm" onclick="loadHeatmap()">↻ Refresh</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadHeatmap()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh</button>
                         </div>
                     </div>
                     <div class="filter-bar">
@@ -177,7 +191,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <span class="card-title">Topic Mastery Map</span>
-                                <div style="display:flex;gap:8px;font-size:11px;"><span>🟩 ≥75%</span><span>🟨 50-74%</span><span>🟥 &lt;50%</span></div>
                             </div>
                             <div id="hm-container" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div>Select a class</div></div>
                         </div>
@@ -191,20 +204,20 @@
                 <!-- ===== CURRICULUM ===== -->
                 <div id="a-curriculum" class="tab-content">
                     <div class="section-header">
-                        <div><h2>📚 Curriculum Hierarchy</h2><p>REB curriculum structure: Levels → Classes → Subjects</p></div>
+                        <div><h2><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span> Curriculum Hierarchy</h2><p>REB curriculum structure: Levels <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Classes <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Subjects</p></div>
                         <div class="section-actions">
                             <button class="btn btn-primary btn-sm" onclick="triggerRebSync()">⟳ Sync REB</button>
-                            <button class="btn btn-secondary btn-sm" onclick="loadCurriculumData()">↻ Refresh</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadCurriculumData()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh</button>
                         </div>
                     </div>
-                    <div class="alert alert-success mb-3" id="curriculum-sync-note"><span>📡</span><span>Loading curriculum data...</span></div>
+                    <div class="alert alert-success mb-3" id="curriculum-sync-note"><span><span class="material-symbols-outlined ui-icon" aria-hidden="true">cell_tower</span></span><span>Loading curriculum data...</span></div>
                     <div id="curriculum-hierarchy" class="panel-scroll-lg"><div class="loading"><div class="spinner"></div></div></div>
                 </div>
 
                 <!-- ===== TEACHER GUIDES ===== -->
                 <div id="a-guides" class="tab-content">
                     <div class="section-header">
-                        <div><h2>📖 Teacher Guides</h2><p>Official REB teaching guides, by Level → Class → Subject</p></div>
+                        <div><h2><span class="material-symbols-outlined ui-icon" aria-hidden="true">menu_book</span> Teacher Guides</h2><p>Official REB teaching guides, by Level <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Class <span class="material-symbols-outlined ui-icon" aria-hidden="true">arrow_forward</span> Subject</p></div>
                         <div class="section-actions">
                             <button class="btn btn-primary btn-sm" onclick="triggerRebSync()">⟳ Sync</button>
                             <button class="btn btn-secondary btn-sm" onclick="resetGuideFilters()">⟲ Reset Filters</button>
@@ -226,7 +239,7 @@
 
                 <!-- ===== REPORTS ===== -->
                 <div id="a-reports" class="tab-content">
-                    <div class="section-header"><div><h2>AI Reports</h2><p>School compliance and performance reports</p></div><button class="btn btn-primary btn-sm" onclick="generateReport()">🤖 Generate</button></div>
+                    <div class="section-header"><div><h2>AI Reports</h2><p>School compliance and performance reports</p></div><button class="btn btn-primary btn-sm" onclick="generateReport()"><span class="material-symbols-outlined ui-icon" aria-hidden="true">smart_toy</span> Generate</button></div>
                     <div id="a-report-content"><div class="loading"><div class="spinner"></div></div></div>
                 </div>
 
@@ -245,9 +258,9 @@
                 <!-- ===== MANAGE USERS ===== -->
                 <div id="a-users" class="tab-content">
                     <div class="section-header">
-                        <div><h2>👥 Manage Users</h2><p>Create, edit and remove Admin, Teacher, Student and Authority accounts</p></div>
+                        <div><h2><span class="material-symbols-outlined ui-icon" aria-hidden="true">group</span> Manage Users</h2><p>Create, edit and remove Admin, Teacher, Student and Authority accounts</p></div>
                         <div class="section-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="loadUsers(usersState.page)">↻ Refresh</button>
+                            <button class="btn btn-secondary btn-sm" onclick="loadUsers(usersState.page)"><span class="material-symbols-outlined ui-icon" aria-hidden="true">refresh</span> Refresh</button>
                             <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ New User</button>
                         </div>
                     </div>
@@ -278,10 +291,10 @@
 
                 <!-- ===== SETTINGS ===== -->
                 <div id="a-settings" class="tab-content">
-                    <div class="section-header"><div><h2>⚙️ Settings</h2></div></div>
+                    <div class="section-header"><div><h2><span class="material-symbols-outlined ui-icon" aria-hidden="true">settings</span> Settings</h2></div></div>
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header"><span class="card-title">🏫 School</span></div>
+                            <div class="card-header"><span class="card-title"><span class="material-symbols-outlined ui-icon" aria-hidden="true">apartment</span> School</span></div>
                             <div class="form-group"><label class="form-label">School Name</label><input class="form-control" value="Groupe Scolaire du Mont Kigali / APACE"></div>
                             <div class="form-group"><label class="form-label">Location</label><input class="form-control" value="Kigali, Rwanda"></div>
                             <div class="form-group"><label class="form-label">API URL</label><input class="form-control" id="settings-api-url" value="http://localhost:8000"></div>
@@ -301,6 +314,7 @@
         </div>
     </div>
 
+    <script src="js/icons.js"></script>
     <script src="js/config.js"></script>
     <script src="js/ui-helpers.js"></script>
     <script src="js/auth.js"></script>

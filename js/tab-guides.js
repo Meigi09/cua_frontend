@@ -116,7 +116,7 @@ async function loadTeacherGuides() {
     if (document.getElementById("a-guide-count"))
       document.getElementById("a-guide-count").textContent = guideCount;
   } catch (e) {
-    container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+    container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     console.error("Error loading guides:", e);
   }
 }
@@ -136,7 +136,7 @@ function renderGuideGroup(levelName, classCode, items) {
         <div class="card mb-4">
             <div class="card-header" style="cursor:default;">
                 <div style="display:flex;align-items:center;gap:10px;">
-                    <span style="font-size:20px;">📚</span>
+                    <span style="font-size:20px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">menu_book</span></span>
                     <div>
                         <div style="font-weight:800;font-size:15px;">
                             ${displayClass === "Unclassified" ? "Other / Unclassified" : `Class ${displayClass}`}
@@ -184,46 +184,82 @@ function guideCard(c) {
             <div class="guide-title">${subjectName}</div>
             <div style="font-size:12px;color:var(--gray-600);margin-bottom:4px;">${c.name || "—"}</div>
             <div class="guide-meta">
-                ${classCode ? `<span>🎓 ${classCode}</span> &nbsp;·&nbsp;` : ""}
+                ${classCode ? `<span><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">school</span> ${classCode}</span> &nbsp;·&nbsp;` : ""}
                 ${levelDisplay && levelDisplay !== "Other" ? `<span>📐 ${levelDisplay}</span> &nbsp;·&nbsp;` : ""}
                 <span class="badge" style="font-size:10px;background:#f0fdf4;color:#166534;">${langLabel}</span>
             </div>
             <div class="guide-actions">
                 ${
                   hasUrl
-                    ? `<button class="btn btn-primary btn-sm" onclick="viewPDF('${c.teacher_guide_url}','${(subjectName || "").replace(/'/g, "\\'")} — ${classCode || ""}')">👁 View</button>
-                       <a href="${c.teacher_guide_url}" target="_blank" class="btn btn-secondary btn-sm">⬇ Download</a>`
+                    ? `<button class="btn btn-primary btn-sm" onclick="viewPDF('${c.teacher_guide_url}','${(subjectName || "").replace(/'/g, "\\'")} — ${classCode || ""}', ${c.id ?? "null"})"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">visibility</span> View PDF</button>
+                       <button class="btn btn-secondary btn-sm" onclick="downloadGuidePDF('${c.teacher_guide_url}','${(subjectName || "").replace(/'/g, "\\'")}')"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download PDF</button>`
                     : `<span class="text-muted text-sm">No PDF linked</span>`
                 }
             </div>
         </div>`;
 }
 
+// Force an actual file download (never opens a browser tab) by fetching the
+// bytes ourselves and triggering a Blob download, rather than relying on the
+// source server's Content-Disposition header, which is inconsistent for
+// externally-hosted REB guides.
+async function downloadGuidePDF(url, label) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Download failed: ' + res.status);
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${(label || 'teacher-guide').replace(/[^\w\- ]+/g, '')}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch (e) {
+    // Cross-origin sources that block fetch() still support a direct
+    // navigation download as a fallback.
+    window.open(url, '_blank');
+    toast('Opened in a new tab — direct download was blocked by the source server.', 'warning');
+  }
+}
+
 // View only — serves PDF through our backend proxy to avoid cross-origin issues
+// function viewPDF(url, title, courseId) {
+//   document.getElementById("pdf-viewer-overlay")?.remove();
+//   // Use backend proxy if courseId provided, else direct URL
+//   const proxyUrl = courseId
+//     ? `http://localhost:8000/api/curriculum/proxy-guide/${courseId}/`
+//     : url;
+//   const overlay = document.createElement("div");
+//   overlay.id = "pdf-viewer-overlay";
+//   overlay.style.cssText =
+//     "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;flex-direction:column;";
+//   overlay.innerHTML = `
+//         <div style="background:#1a1a2e;color:white;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;">
+//             <div style="font-weight:700;font-size:14px;"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">description</span> ${title}</div>
+//             <div style="display:flex;gap:8px;">
+//                 <a href="${url}" target="_blank" download class="btn btn-secondary btn-sm"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">download</span> Download</a>
+//                 <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;"
+//                         onclick="document.getElementById('pdf-viewer-overlay').remove()"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">close</span> Close</button>
+//             </div>
+//         </div>
+//         <iframe src="${proxyUrl}" style="flex:1;border:none;background:#f0f0f0;" title="${title}"
+//                 onerror="this.src='${url}'"></iframe>
+//     `;
+//   overlay.addEventListener("click", (e) => {
+//     if (e.target === overlay) overlay.remove();
+//   });
+//   document.body.appendChild(overlay);
+// }
 function viewPDF(url, title, courseId) {
-  document.getElementById("pdf-viewer-overlay")?.remove();
-  // Use backend proxy if courseId provided, else direct URL
-  const proxyUrl = courseId
-    ? `http://localhost:8000/api/curriculum/proxy-guide/${courseId}/`
+  // Route through the backend's same-origin proxy (apps/curriculum/pdf_proxy.py,
+  // exposed at /api/curriculum/proxy-guide/<course_id>/) whenever we have a
+  // course id. Teacher guides are hosted on REB's own domain, which does not
+  // send CORS headers — fetching that URL directly from the browser fails
+  // silently and the viewer then falls back to a raw download instead of
+  // opening inline. The proxy fetches the file server-side and streams it
+  // back same-origin, so PDF.js can always render it in-app.
+  const viewUrl = courseId
+    ? `${CONFIG.API}/api/curriculum/proxy-guide/${courseId}/`
     : url;
-  const overlay = document.createElement("div");
-  overlay.id = "pdf-viewer-overlay";
-  overlay.style.cssText =
-    "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;flex-direction:column;";
-  overlay.innerHTML = `
-        <div style="background:#1a1a2e;color:white;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;">
-            <div style="font-weight:700;font-size:14px;">📄 ${title}</div>
-            <div style="display:flex;gap:8px;">
-                <a href="${url}" target="_blank" download class="btn btn-secondary btn-sm">⬇ Download</a>
-                <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;"
-                        onclick="document.getElementById('pdf-viewer-overlay').remove()">✕ Close</button>
-            </div>
-        </div>
-        <iframe src="${proxyUrl}" style="flex:1;border:none;background:#f0f0f0;" title="${title}"
-                onerror="this.src='${url}'"></iframe>
-    `;
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) overlay.remove();
-  });
-  document.body.appendChild(overlay);
+  viewDocumentInline(viewUrl, title || "Teacher Guide");
 }

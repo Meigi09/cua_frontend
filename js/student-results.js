@@ -26,6 +26,6 @@ async function loadMyResults() {
             </div>
         ` : '<div class="text-muted text-sm">No quiz attempts yet — try a Practice Quiz!</div>';
     } catch (e) {
-        container.innerHTML = `<div class="alert alert-warning">⚠️ ${e.message}</div>`;
+        container.innerHTML = `<div class="alert alert-warning"><span class=\"material-symbols-outlined ui-icon\" aria-hidden=\"true\">warning</span> ${e.message}</div>`;
     }
 }
