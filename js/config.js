@@ -4,9 +4,13 @@
 // ============================================
 
 const CONFIG = {
-    API: localStorage.getItem('c3ua_api_url') || 'http://localhost:8000',
-    NESA_DATE: new Date('2026-06-30T08:00:00'),
+  API_BASE:
+    window.location.hostname === "127.0.0.1"
+      ? "http://localhost:8000"
+      : "https://cua-backend-pk9l.onrender.com",
+  NESA_DATE: new Date("2027-07-19T08:00:00"),
 };
+
 
 const STATE = {
     token: null,
